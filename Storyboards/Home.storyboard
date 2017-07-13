@@ -39,7 +39,7 @@
                                         <state key="normal" title="MAP"/>
                                         <connections>
                                             <action selector="mapButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="MMj-Aa-zgE"/>
-                                            <segue destination="Nak-Lv-h2b" kind="show" id="toW-Fh-IVG"/>
+                                            <segue destination="Nak-Lv-h2b" kind="show" identifier="toMapView" id="toW-Fh-IVG"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -79,10 +79,89 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" title="MAP" id="hXG-DB-Vow">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="yEY-7D-tHB">
+                            <connections>
+                                <segue destination="ieU-Ru-QLx" kind="unwind" identifier="cancel" unwindAction="unwindToHomeViewController:" id="vA9-N1-PBJ"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Get Places" id="kIO-xv-rQ3">
+                            <connections>
+                                <segue destination="u5z-ae-Q0h" kind="show" identifier="toPlacesList" id="gX3-Cs-Iqu"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6eZ-Pu-Lal" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="ieU-Ru-QLx" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1724" y="137"/>
+        </scene>
+        <!--Place List-->
+        <scene sceneID="xts-fY-chq">
+            <objects>
+                <exit id="jzi-g4-0PX" userLabel="Exit" sceneMemberID="exit"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZFr-ac-NJy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="u5z-ae-Q0h" customClass="PlaceViewController" customModule="GoogleMapsAPITest" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8Ts-R7-ze0"/>
+                        <viewControllerLayoutGuide type="bottom" id="12x-T9-ysn"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="laS-78-8aZ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fQc-IF-KdP">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="listPlacesTableViewCell" id="pX8-V3-8yg" customClass="ListPlacesTableViewCell" customModule="GoogleMapsAPITest" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="pX8-V3-8yg" id="Wo8-0k-H5w">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Plz Make This Work" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HdA-6Z-n9N">
+                                                    <rect key="frame" x="0.0" y="11.5" width="150" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="HdA-6Z-n9N" firstAttribute="centerY" secondItem="Wo8-0k-H5w" secondAttribute="centerY" id="iaR-jT-hXp"/>
+                                                <constraint firstItem="HdA-6Z-n9N" firstAttribute="leading" secondItem="Wo8-0k-H5w" secondAttribute="leading" id="oOn-Ct-bBR"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="placeTextLabel" destination="HdA-6Z-n9N" id="pVK-QF-m3Z"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="fQc-IF-KdP" firstAttribute="top" secondItem="laS-78-8aZ" secondAttribute="top" id="doS-7N-Pr4"/>
+                            <constraint firstItem="fQc-IF-KdP" firstAttribute="leading" secondItem="laS-78-8aZ" secondAttribute="leading" id="hZX-nY-kfq"/>
+                            <constraint firstAttribute="trailing" secondItem="fQc-IF-KdP" secondAttribute="trailing" id="jtP-xN-Pye"/>
+                            <constraint firstItem="12x-T9-ysn" firstAttribute="top" secondItem="fQc-IF-KdP" secondAttribute="bottom" id="o5J-jh-yIJ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Place List" id="LIc-PN-gF6">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="v40-ee-HLJ">
+                            <connections>
+                                <segue destination="jzi-g4-0PX" kind="unwind" identifier="selectionMade" unwindAction="unwindToMapViewController:" id="faU-ef-1E6"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="tableView" destination="fQc-IF-KdP" id="NKk-Py-gZM"/>
+                    </connections>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="2474" y="142"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="pdv-AE-c1j">
@@ -100,7 +179,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="L2u-tq-Fv5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="80.799999999999997" y="141.67916041979012"/>
+            <point key="canvasLocation" x="354" y="149"/>
         </scene>
     </scenes>
 </document>

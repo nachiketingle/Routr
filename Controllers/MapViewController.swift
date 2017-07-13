@@ -22,6 +22,8 @@ class MapViewController: UIViewController {
     var likelyPlaces: [GMSPlace] = []
     var selectedPlace: GMSPlace?
     
+    var count: Int = 0;
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("Started to load")
@@ -34,7 +36,48 @@ class MapViewController: UIViewController {
         
         placesClient = GMSPlacesClient.shared()
         
+        let camera = GMSCameraPosition.camera(withLatitude: 48.8566,
+                                              longitude: 2.3522,
+                                              zoom: zoomLevel)
+        
+        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
+        mapView.settings.myLocationButton = true
+        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        //Creates current location marker (blue dot)
+        mapView.isMyLocationEnabled = true
+        
+        // Add the map to the view, hide it until we've got a location update.
+        view.addSubview(mapView)
+        //mapView.isHidden = true
+        
         print("Finished loading")
+    }
+    
+    @IBAction func unwindToMapViewController(_ segue: UIStoryboardSegue) {
+        
+        mapView.clear()
+        
+        if selectedPlace != nil {
+            let marker = GMSMarker(position: (self.selectedPlace?.coordinate)!)
+            marker.title = selectedPlace?.name
+            marker.snippet = selectedPlace?.formattedAddress
+            marker.map = mapView
+        }
+        
+        listLikelyPlaces()
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let identifier = segue.identifier {
+            if identifier == "toPlacesList" {
+                if let nextViewController = segue.destination as? PlaceViewController {
+                    nextViewController.likelyPlaces = likelyPlaces
+                    //print("LikelyPlaces has been passed: \(likelyPlaces)")
+                }
+            }
+        }
     }
 }
 
@@ -42,33 +85,19 @@ extension MapViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location: CLLocation = locations.last!
-        print("Location \(location)")
+        //print("Location \(location)")
         
         let camera  = GMSCameraPosition.camera(withLatitude: location.coordinate.latitude, longitude: location.coordinate.longitude, zoom: zoomLevel)
-        print("Camera works")
-        
-        mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
-        mapView.settings.myLocationButton = true
-        mapView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        //mapView.isMyLocationEnabled = true
-        
-        // Add the map to the view, hide it until we've got a location update.
-        view.addSubview(mapView)
-        //mapView.isHidden = true
         
         if mapView.isHidden {
-            print("Does this work?")
             mapView.isHidden = false
             mapView.camera = camera
-            print("Yes it does!")
         } else {
-            print("plz work")
             mapView.animate(to: camera)
         }
-        
-        print("Map is working")
-        
-        //listLikelyPlaces()
+        //print("Count is \(count)")
+        count += 1
+        listLikelyPlaces()
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -90,6 +119,28 @@ extension MapViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         locationManager.startUpdatingLocation()
         print("Error: \(error.localizedDescription)")
+    }
+    
+    func listLikelyPlaces() {
+        likelyPlaces.removeAll()
+        
+        placesClient.currentPlace (callback:{ (placeLikelihoods, error) -> Void in
+            if let error = error {
+                print("Current place error: \(error.localizedDescription)")
+                return
+            }
+        
+            if let likelihoodList = placeLikelihoods {
+                print("Starting to add places")
+                for likelihood in likelihoodList.likelihoods {
+                    let place = likelihood.place
+                    //print("This place was added: \(place.name)")
+                    self.likelyPlaces.append(place)
+                }
+                print("Finished adding places: \(self.count)")
+            }
+            
+        })
     }
     
 }
