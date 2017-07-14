@@ -27,6 +27,7 @@ class PlaceViewController: UIViewController {
         self.tableView.dataSource = self
         
         tableView.reloadData()
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -45,6 +46,17 @@ class PlaceViewController: UIViewController {
 }
 
 extension PlaceViewController: UITableViewDataSource {
+    
+    func loadImageForMetaData(photoMetaData: GMSPlacePhotoMetadata, cell: ListPlacesTableViewCell) {
+        placesClient.loadPlacePhoto(photoMetaData) { (photo, error) in
+            if let error = error {
+                print("Photo error: \(error.localizedDescription)")
+                return
+            }
+            cell.placeImageView.image = photo
+        }
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         print("Returning number of rows: \(likelyPlaces.count)")
         return likelyPlaces.count
@@ -52,11 +64,23 @@ extension PlaceViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listPlacesTableViewCell", for: indexPath) as! ListPlacesTableViewCell
-        let collectionItem = likelyPlaces[indexPath.row]
+        let place = likelyPlaces[indexPath.row]
         
-        print("This places should be shown: \(collectionItem.name)")
+        print("This places should be shown: \(place.name)")
         
-        cell.placeTextLabel.text = collectionItem.name
+        //let location: String = place.name.replacingOccurrences(of: " ", with: "+")
+        
+        placesClient.lookUpPhotos(forPlaceID: place.placeID) { (placePhotoMetaData, error) in
+            if let error = error {
+                print("Photo metadata error: \(error.localizedDescription)")
+                return
+            }
+            if let firstPhoto = placePhotoMetaData?.results.first {
+                self.loadImageForMetaData(photoMetaData: firstPhoto, cell: cell)
+            }
+        }
+        
+        cell.placeTextLabel.text = place.name
         
         return cell
     }

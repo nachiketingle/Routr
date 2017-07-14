@@ -16,7 +16,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var locationTextField: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Wut?")
+
     }
     
     override func didReceiveMemoryWarning() {
