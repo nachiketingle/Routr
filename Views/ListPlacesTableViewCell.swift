@@ -13,5 +13,5 @@ class ListPlacesTableViewCell: UITableViewCell {
     
     @IBOutlet weak var placeTextLabel: UILabel!
     @IBOutlet weak var placeImageView: UIImageView!
-    
+    @IBOutlet weak var attributionTextLabel: UILabel!
 }

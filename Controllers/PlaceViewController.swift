@@ -54,11 +54,17 @@ extension PlaceViewController: UITableViewDataSource {
                 return
             }
             cell.placeImageView.image = photo
+            cell.attributionTextLabel.text = photoMetaData.attributions?.string
+            
         }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("Returning number of rows: \(likelyPlaces.count)")
+        //print("Returning number of rows: \(likelyPlaces.count)")
+        if likelyPlaces.count > 10 {
+            let range: ClosedRange<Int> = ClosedRange(uncheckedBounds: (lower: 15, upper: likelyPlaces.count - 1))
+            likelyPlaces.removeSubrange(range)
+        }
         return likelyPlaces.count
     }
     
@@ -77,6 +83,8 @@ extension PlaceViewController: UITableViewDataSource {
             }
             if let firstPhoto = placePhotoMetaData?.results.first {
                 self.loadImageForMetaData(photoMetaData: firstPhoto, cell: cell)
+            } else {
+                cell.attributionTextLabel.text = "Error occured"
             }
         }
         
@@ -86,8 +94,8 @@ extension PlaceViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        print("Returning height")
-        return self.tableView.frame.size.height / 5
+        //print("Returning height")
+        return self.tableView.frame.size.height / 4
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

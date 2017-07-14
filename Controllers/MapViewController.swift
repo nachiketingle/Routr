@@ -21,7 +21,7 @@ class MapViewController: UIViewController {
     
     var likelyPlaces: [GMSPlace] = []
     var selectedPlace: GMSPlace?
-    
+    var markerLocation: GMSPlace?
     var count: Int = 0;
     
     override func viewDidLoad() {
@@ -46,6 +46,13 @@ class MapViewController: UIViewController {
         
         //Creates current location marker (blue dot)
         mapView.isMyLocationEnabled = true
+        
+        if let place = markerLocation {
+            let marker = GMSMarker(position: place.coordinate)
+            marker.title = place.name
+            marker.snippet = place.formattedAddress
+            marker.map = mapView
+        }
         
         // Add the map to the view, hide it until we've got a location update.
         view.addSubview(mapView)
@@ -76,7 +83,7 @@ class MapViewController: UIViewController {
                     nextViewController.likelyPlaces = likelyPlaces
                     //print("LikelyPlaces has been passed: \(likelyPlaces)")
                 }
-            }
+            } 
         }
     }
 }
@@ -141,6 +148,7 @@ extension MapViewController: CLLocationManagerDelegate {
             }
             
         })
+        
     }
     
 }
