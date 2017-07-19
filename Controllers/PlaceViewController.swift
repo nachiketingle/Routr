@@ -10,24 +10,44 @@ import Foundation
 import UIKit
 import GoogleMaps
 import GooglePlaces
+import SwiftyJSON
+import Alamofire
+import AlamofireImage
+import AlamofireNetworkActivityIndicator
 
 class PlaceViewController: UIViewController {
     
     var likelyPlaces: [GMSPlace] = []
     var selectedPlace: GMSPlace?
-    
+    var placesList: [ListPlacesTableViewCell] = []
+    let APIkey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
     var placesClient = GMSPlacesClient.shared()
     
     @IBOutlet weak var tableView: UITableView!
 
     override func viewDidLoad() {
-        super.viewDidLoad()
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
-        tableView.reloadData()
+        //set number of places to just 10
+        if likelyPlaces.count > 10 {
+            let range: ClosedRange<Int> = ClosedRange(uncheckedBounds: (lower: 15, upper: likelyPlaces.count - 1))
+            likelyPlaces.removeSubrange(range)
+        }
         
+        for place in likelyPlaces {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "listPlacesTableViewCell") as! ListPlacesTableViewCell
+            print("Cell has been made")
+            cell.setLocation( to: Location(place: place) )
+            cell.setImage()
+            print("Location has been set")
+            self.placesList.append(cell)
+        }
+        
+        tableView.reloadData()
+        super.viewDidLoad()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -47,6 +67,7 @@ class PlaceViewController: UIViewController {
 
 extension PlaceViewController: UITableViewDataSource {
     
+    //unused function
     func loadImageForMetaData(photoMetaData: GMSPlacePhotoMetadata, cell: ListPlacesTableViewCell) {
         placesClient.loadPlacePhoto(photoMetaData) { (photo, error) in
             if let error = error {
@@ -61,36 +82,12 @@ extension PlaceViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //print("Returning number of rows: \(likelyPlaces.count)")
-        if likelyPlaces.count > 10 {
-            let range: ClosedRange<Int> = ClosedRange(uncheckedBounds: (lower: 15, upper: likelyPlaces.count - 1))
-            likelyPlaces.removeSubrange(range)
-        }
+        
         return likelyPlaces.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "listPlacesTableViewCell", for: indexPath) as! ListPlacesTableViewCell
-        let place = likelyPlaces[indexPath.row]
-        
-        print("This places should be shown: \(place.name)")
-        
-        //let location: String = place.name.replacingOccurrences(of: " ", with: "+")
-        
-        placesClient.lookUpPhotos(forPlaceID: place.placeID) { (placePhotoMetaData, error) in
-            if let error = error {
-                print("Photo metadata error: \(error.localizedDescription)")
-                return
-            }
-            if let firstPhoto = placePhotoMetaData?.results.first {
-                self.loadImageForMetaData(photoMetaData: firstPhoto, cell: cell)
-            } else {
-                cell.attributionTextLabel.text = "Error occured"
-            }
-        }
-        
-        cell.placeTextLabel.text = place.name
-        
-        return cell
+        return placesList[indexPath.row]
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -109,9 +106,9 @@ extension PlaceViewController: UITableViewDataSource {
 
 extension PlaceViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selection started")
+        //print("Selection started")
         selectedPlace = likelyPlaces[indexPath.row]
-        print("Selection continued")
+        //print("Selection continued")
         performSegue(withIdentifier: "selectionMade", sender: self)
     }
 }
