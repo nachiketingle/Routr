@@ -10,6 +10,10 @@ import Foundation
 import UIKit
 import GoogleMaps
 import GooglePlaces
+import Alamofire
+import AlamofireImage
+import AlamofireNetworkActivityIndicator
+import SwiftyJSON
 
 class MapViewController: UIViewController {
     
@@ -23,11 +27,13 @@ class MapViewController: UIViewController {
     var selectedPlace: GMSPlace?
     
     var count: Int = 0;
-    var destinationList: [GMSPlace]?
+    var destinationList: [Location]?
     
+    let APIKey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
+    let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        
         print("Started to load")
         locationManager = CLLocationManager()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -49,19 +55,69 @@ class MapViewController: UIViewController {
         //Creates current location marker (blue dot)
         mapView.isMyLocationEnabled = true
         
+        print("Normal view stuff works.")
+        
         if let destinations = destinationList {
-            for place in destinations {
-                let marker = GMSMarker(position: place.coordinate)
-                marker.title = place.name
-                marker.snippet = place.formattedAddress
-                marker.map = mapView
+            currentLocation = locationManager.location
+            let lat = locationManager.location?.coordinate.latitude
+            let long = locationManager.location?.coordinate.longitude
+            
+            //let url = URL(string: "https://maps.googleapis.com/maps/api/directions/json?origin=\(lat!),\(long!)&destination=place_id:\(destinations[0].placeID)&waypoints=place_id:\(destinations[1].placeID)&key=\(APIKeyDir)")
+            
+            
+            
+            
+            
+            //print("Place ID: \(destinations[0].placeID)")
+            //print("URL is made: \(url!)")
+            var points: String = ""
+            //Alamofire.request(url!).validate().responseJSON() { (response) in
+            
+            Alamofire.request("https://maps.googleapis.com/maps/api/directions/json", method: .get, parameters: ["origin":"\(lat!),\(long!)", "destination":"place_id:\(destinations[0].placeID)", "waypoints":"place_id:\(destinations[1].placeID)" , "key":"\(APIKeyDir)"], encoding: URLEncoding.default, headers: nil) .validate().responseJSON() { (response) in
+                
+                //print("URL works")
+                
+                switch response.result {
+                    
+                case .success:
+                    
+                    if let value = response.result.value {
+                        let json = JSON(value)
+                        //print("This was successful!")
+                        print("JSON Status is : \(json["status"])")
+                        print("JSON error: \(json["error_message"])")
+                        print("Summary: \(json["routes"][0]["summary"])")
+                        print("Overview_polyline: \(json["routes"][0]["overview_polyline"]["points"])")
+                        points = json["routes"][0]["overview_polyline"]["points"].stringValue
+                        
+                        
+                        let path = GMSMutablePath(fromEncodedPath: points)
+                        let route = GMSPolyline(path: path)
+                        route.strokeWidth = 3.0
+                        route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.5)
+                        route.map = self.mapView
+                        
+                        for place in destinations {
+                            let marker = GMSMarker(position: place.coord)
+                            marker.title = place.name
+                            marker.snippet = place.address
+                            marker.map = self.mapView
+                        }
+                        
+                    }
+                    
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                }
             }
+            
         }
         
         // Add the map to the view, hide it until we've got a location update.
         view.addSubview(mapView)
-        //mapView.isHidden = true
+        mapView.isHidden = false
         
+        super.viewDidLoad()
         print("Finished loading")
     }
     
@@ -107,7 +163,7 @@ extension MapViewController: CLLocationManagerDelegate {
             mapView.animate(to: camera)
         }
         //print("Count is \(count)")
-        count += 1
+        //count += 1
         listLikelyPlaces()
     }
     
@@ -145,10 +201,12 @@ extension MapViewController: CLLocationManagerDelegate {
         
             if let likelihoodList = placeLikelihoods {
                 //print("Starting to add places")
+                self.count = 0
                 for likelihood in likelihoodList.likelihoods {
                     let place = likelihood.place
                     //print("This place was added: \(place.name)")
                     self.likelyPlaces.append(place)
+                    self.count += 1
                 }
                 print("Finished adding places: \(self.count)")
             }

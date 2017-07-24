@@ -22,22 +22,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="17" translatesAutoresizingMaskIntoConstraints="NO" id="ceO-qq-1vs">
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="ceO-qq-1vs">
                                 <rect key="frame" x="16" y="64" width="343" height="573"/>
                                 <subviews>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="noS-vD-Wp4">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="479"/>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="noS-vD-Wp4">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="462"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="listDestinationsTableViewCell" id="gih-e7-hzo" customClass="ListDestinationsTableViewCell" customModule="GoogleMapsAPITest" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="343" height="44"/>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="listDestinationsTableViewCell" rowHeight="50" id="gih-e7-hzo" customClass="ListDestinationsTableViewCell" customModule="GoogleMapsAPITest" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="28" width="343" height="50"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gih-e7-hzo" id="3lw-xP-iPb">
-                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="43.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="343" height="49.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Destinations" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b5K-0C-QXi">
-                                                            <rect key="frame" x="13" y="11" width="96" height="21"/>
+                                                            <rect key="frame" x="13" y="14.5" width="96" height="21"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
@@ -54,31 +54,54 @@
                                             </tableViewCell>
                                         </prototypes>
                                     </tableView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VQk-ZI-sgx">
-                                        <rect key="frame" x="136.5" y="496" width="70" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="70" id="HSe-sw-xGb"/>
-                                            <constraint firstAttribute="height" constant="30" id="Rnl-4i-MQg"/>
-                                        </constraints>
-                                        <state key="normal" title="MAP"/>
-                                        <connections>
-                                            <action selector="mapButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="MMj-Aa-zgE"/>
-                                            <segue destination="Nak-Lv-h2b" kind="show" identifier="toMapView" id="toW-Fh-IVG"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mN2-Xj-L8w">
-                                        <rect key="frame" x="131" y="543" width="81" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="Gfh-99-3xe"/>
-                                        </constraints>
-                                        <state key="normal" title="Add a Place"/>
-                                        <connections>
-                                            <action selector="autocompleteButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="rkP-F7-5N8"/>
-                                        </connections>
-                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YBk-0Z-lv4">
+                                        <rect key="frame" x="0.0" y="477" width="343" height="51"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                        <color key="textColor" red="0.59813213832487311" green="0.039749850489282541" blue="0.076439634412549834" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="37" translatesAutoresizingMaskIntoConstraints="NO" id="yJB-mp-SBR">
+                                        <rect key="frame" x="19.5" y="543" width="304" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VQk-ZI-sgx">
+                                                <rect key="frame" x="0.0" y="0.0" width="70" height="30"/>
+                                                <color key="backgroundColor" red="0.51340925690000005" green="0.95495611430000005" blue="0.49807274340000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="70" id="HSe-sw-xGb"/>
+                                                    <constraint firstAttribute="height" constant="30" id="Rnl-4i-MQg"/>
+                                                </constraints>
+                                                <state key="normal" title="MAP"/>
+                                                <connections>
+                                                    <action selector="mapButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="MMj-Aa-zgE"/>
+                                                    <segue destination="Nak-Lv-h2b" kind="show" identifier="toMapView" id="toW-Fh-IVG"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mN2-Xj-L8w">
+                                                <rect key="frame" x="107" y="0.0" width="81" height="30"/>
+                                                <color key="backgroundColor" red="0.51340925690000005" green="0.95495611430000005" blue="0.49807274340000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="Gfh-99-3xe"/>
+                                                </constraints>
+                                                <state key="normal" title="Add a Place"/>
+                                                <connections>
+                                                    <action selector="autocompleteButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="rkP-F7-5N8"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Co-1O-8bN">
+                                                <rect key="frame" x="225" y="0.0" width="79" height="30"/>
+                                                <color key="backgroundColor" red="0.51340925690000005" green="0.95495611430000005" blue="0.49807274340000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <state key="normal" title="Don't Press"/>
+                                                <connections>
+                                                    <action selector="searchButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="6Zq-e6-mdt"/>
+                                                    <action selector="testButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="sAv-nn-VRe"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="noS-vD-Wp4" secondAttribute="trailing" id="HpK-av-UW7"/>
+                                    <constraint firstItem="yJB-mp-SBR" firstAttribute="centerX" secondItem="ceO-qq-1vs" secondAttribute="centerX" id="Hxf-u5-5xl"/>
                                     <constraint firstItem="noS-vD-Wp4" firstAttribute="centerX" secondItem="ceO-qq-1vs" secondAttribute="centerX" id="O7f-Nk-Sn2"/>
                                     <constraint firstItem="noS-vD-Wp4" firstAttribute="leading" secondItem="ceO-qq-1vs" secondAttribute="leading" id="PV2-aQ-UDT"/>
                                 </constraints>
@@ -95,7 +118,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="J2w-5B-M3J"/>
                     <connections>
+                        <outlet property="notCoolLabel" destination="YBk-0Z-lv4" id="3nY-K4-WG0"/>
                         <outlet property="tableView" destination="noS-vD-Wp4" id="zP0-Ca-JqC"/>
+                        <segue destination="Dbc-cc-q1u" kind="show" identifier="toBlueScreen" id="ga3-Ht-iEh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Za8-tD-wPC" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -113,7 +138,19 @@
                     <view key="view" contentMode="scaleToFill" id="j8i-lT-MRr">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="THIS IS SO COOL" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yls-BV-FXd">
+                                <rect key="frame" x="119.5" y="323" width="135" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="yls-BV-FXd" firstAttribute="centerY" secondItem="j8i-lT-MRr" secondAttribute="centerY" id="Fe9-H9-3rS"/>
+                            <constraint firstItem="yls-BV-FXd" firstAttribute="centerX" secondItem="j8i-lT-MRr" secondAttribute="centerX" id="xqi-2V-1nU"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="MAP" id="hXG-DB-Vow">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="yEY-7D-tHB">
@@ -121,7 +158,7 @@
                                 <segue destination="ieU-Ru-QLx" kind="unwind" identifier="cancel" unwindAction="unwindToHomeViewController:" id="vA9-N1-PBJ"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Get Places" id="kIO-xv-rQ3">
+                        <barButtonItem key="rightBarButtonItem" title="Get Nearby Places" id="kIO-xv-rQ3">
                             <connections>
                                 <segue destination="u5z-ae-Q0h" kind="show" identifier="toPlacesList" id="gX3-Cs-Iqu"/>
                             </connections>
@@ -132,6 +169,87 @@
                 <exit id="ieU-Ru-QLx" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1724" y="137"/>
+        </scene>
+        <!--Predictions Table View Controller-->
+        <scene sceneID="9Nx-hQ-Tv4">
+            <objects>
+                <tableViewController id="cM3-jo-u4a" customClass="PredictionsTableViewController" customModule="GoogleMapsAPITest" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Td3-eX-BTd">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="separatorColor" red="0.21960784310000001" green="0.59215686270000001" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="sectionIndexColor" red="0.21960784310000001" green="0.59215686270000001" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="sectionIndexBackgroundColor" red="0.51340925690000005" green="0.95495611430000005" blue="0.49807274340000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="predictionCell" id="J6f-56-cmc" customClass="ListPredictionsTableViewCell" customModule="GoogleMapsAPITest" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="J6f-56-cmc" id="IOD-Dd-vSK">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ChP-m2-zL4">
+                                            <rect key="frame" x="166.5" y="11" width="42" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.51340925690000005" green="0.95495611430000005" blue="0.49807274340000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstItem="ChP-m2-zL4" firstAttribute="centerY" secondItem="IOD-Dd-vSK" secondAttribute="centerY" id="Efb-jP-dlg"/>
+                                        <constraint firstItem="ChP-m2-zL4" firstAttribute="centerX" secondItem="IOD-Dd-vSK" secondAttribute="centerX" id="kpl-h3-f62"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="predictionLabel" destination="ChP-m2-zL4" id="Wpn-pl-iPl"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="cM3-jo-u4a" id="Qmz-KA-jF1"/>
+                            <outlet property="delegate" destination="cM3-jo-u4a" id="eI1-kN-iGj"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="708-Mw-bPP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1020" y="891"/>
+        </scene>
+        <!--Blue Screen View Controller-->
+        <scene sceneID="lvE-zt-faF">
+            <objects>
+                <viewController id="Dbc-cc-q1u" customClass="BlueScreenViewController" customModule="GoogleMapsAPITest" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DUb-od-W2s"/>
+                        <viewControllerLayoutGuide type="bottom" id="HiR-JQ-qta"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="99r-aG-afl">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tmV-kW-i1S">
+                                <rect key="frame" x="164" y="305" width="46" height="57"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="37"/>
+                                <state key="normal" title="HI!">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="crashButtonPressed:" destination="Dbc-cc-q1u" eventType="touchUpInside" id="KXF-FD-jqy"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="tmV-kW-i1S" firstAttribute="centerX" secondItem="99r-aG-afl" secondAttribute="centerX" id="OMw-ah-Oh6"/>
+                            <constraint firstItem="tmV-kW-i1S" firstAttribute="centerY" secondItem="99r-aG-afl" secondAttribute="centerY" id="UoO-k1-iWn"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cag-vg-7MQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1822" y="868"/>
         </scene>
         <!--Place List-->
         <scene sceneID="xts-fY-chq">

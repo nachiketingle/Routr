@@ -19,7 +19,7 @@ class PlaceViewController: UIViewController {
     
     var likelyPlaces: [GMSPlace] = []
     var selectedPlace: GMSPlace?
-    var placesList: [ListPlacesTableViewCell] = []
+    var placesList: [Location] = []
     let APIkey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
     var placesClient = GMSPlacesClient.shared()
     
@@ -36,15 +36,11 @@ class PlaceViewController: UIViewController {
             likelyPlaces.removeSubrange(range)
         }
         
+        
         for place in likelyPlaces {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "listPlacesTableViewCell") as! ListPlacesTableViewCell
-            print("Cell has been made")
-            cell.setLocation( to: Location(place: place) )
-            cell.setImage()
-            print("Location has been set")
-            self.placesList.append(cell)
+            placesList.append(Location(place: place))
         }
+        
         
         tableView.reloadData()
         super.viewDidLoad()
@@ -87,7 +83,12 @@ extension PlaceViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return placesList[indexPath.row]
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "listPlacesTableViewCell", for: indexPath) as! ListPlacesTableViewCell
+        
+        cell.setLocation(to: placesList[indexPath.row])
+        return cell
+        //return placesList[indexPath.row]
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
