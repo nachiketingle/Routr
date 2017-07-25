@@ -12,17 +12,22 @@ import Alamofire
 import AlamofireNetworkActivityIndicator
 import SwiftyJSON
 
-class PredictionsTableViewController: UITableViewController, UISearchResultsUpdating {
+class PredictionsTableViewController: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate {
     
     var unfilteredPlaces: [String] = ["San Jose", "San Francisco", "Hacker Dojo", "California", "Subway", "Taco Bell",
                                       "Pho Van"]
     var filteredPlaces: [String]?
+    
+    var predictedPlaces: [BasicLocation] = []
+    
     let searchController = UISearchController(searchResultsController: nil)
-    let APIKey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
+    let APIKey = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
+    var selectedPlace: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        filteredPlaces = unfilteredPlaces
+        //filteredPlaces = unfilteredPlaces
+        searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.dimsBackgroundDuringPresentation = false
@@ -35,28 +40,42 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
         searchController.dismiss(animated: false, completion: nil)
     }
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("Starting to segue")
+        if let identifier = segue.identifier {
+            if identifier == "unwindToHome" {
+                if let nextViewController = segue.destination as? HomeViewController {
+                    nextViewController.selectedPlace = selectedPlace!
+                    print("New location has been added")
+                }
+            }
+        }
+        print("End of segue")
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let places = filteredPlaces else { return 0 }
-        return places.count
+        //guard let places = predictedPlaces else { return 0 }
+        return predictedPlaces.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "predictionCell", for: indexPath) as! ListPredictionsTableViewCell
-        if let places = filteredPlaces {
-            cell.predictionLabel.text = "Hello! This is the cell for \(places[indexPath.row])"
-        }
+        //if let places = predictedPlaces {
+            cell.predictionLabel.text = "Hello! This is the cell for \(predictedPlaces[indexPath.row])"
+        //}
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedPlace = predictedPlaces[indexPath.row].placeID
+        performSegue(withIdentifier: "unwindToHome", sender: self)
+    }
+    
     func updateSearchResults(for searchController: UISearchController) {
-        
+        /*
         if let searchText = searchController.searchBar.text?.replacingOccurrences(of: " ", with: "+"), !searchText.isEmpty {
-            
-            let url = URL(string: "https://maps.googleapis.com/maps/api/place/textsearch/json?query=\(searchText)&key=\(APIKey)")
+            /*
+            let url = URL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(searchText)&location=0,0&radius=20000000&key=\(APIKey)")
             Alamofire.request(url!).validate().responseJSON() { (response) in
                 switch response.result {
                     
@@ -71,7 +90,7 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
                     print("Error: \(error.localizedDescription)")
                 }
             }
-            
+            */
             filteredPlaces = unfilteredPlaces.filter{ places in
                 return places.lowercased().contains(searchText.lowercased())
             }
@@ -80,8 +99,39 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
         }
         
         tableView.reloadData()
+        */
     }
     
-    
-    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        if let searchText = searchController.searchBar.text?.replacingOccurrences(of: " ", with: "+"), !searchText.isEmpty {
+            
+            
+             let url = URL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(searchText)&location=0,0&radius=20000000&key=\(APIKey)")
+             Alamofire.request(url!).validate().responseJSON() { (response) in
+             switch response.result {
+             
+             case .success:
+             
+                if let value = response.result.value {
+                    let json = JSON(value)
+                    print("JSON Status is : \(json["status"])")
+                    print("JSON Error: \(json["error_message"])")
+                    self.predictedPlaces.removeAll()
+                    
+                    for count in 0...json["predictions"].count-1 {
+                        self.predictedPlaces.append(BasicLocation(json: json["predictions"][count]))
+                        print("Appended: \(self.predictedPlaces[count].name)")
+                    }
+                    self.tableView.reloadData()
+                }
+             
+             case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                }
+            }
+            
+        }
+        
+        //tableView.reloadData()
+    }
 }

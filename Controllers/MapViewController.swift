@@ -64,16 +64,31 @@ class MapViewController: UIViewController {
             
             //let url = URL(string: "https://maps.googleapis.com/maps/api/directions/json?origin=\(lat!),\(long!)&destination=place_id:\(destinations[0].placeID)&waypoints=place_id:\(destinations[1].placeID)&key=\(APIKeyDir)")
             
+            var params: [String : String] = [:]
             
-            
-            
+            if !destinations.isEmpty {
+                
+                params["origin"] = "\(lat!),\(long!)"
+                params["destination"] = "place_id:\(destinations[0].placeID)"
+                
+                if destinations.count > 1 {
+                    var waypoints: String = "optimize:true"
+
+                    for count in 1...destinations.count-1 {
+                        waypoints.append("|place_id:\(destinations[count].placeID)")
+                    }
+                    params["waypoints"] = waypoints
+                }
+                params["key"] = APIKeyDir
+            }
             
             //print("Place ID: \(destinations[0].placeID)")
             //print("URL is made: \(url!)")
             var points: String = ""
             //Alamofire.request(url!).validate().responseJSON() { (response) in
-            
-            Alamofire.request("https://maps.googleapis.com/maps/api/directions/json", method: .get, parameters: ["origin":"\(lat!),\(long!)", "destination":"place_id:\(destinations[0].placeID)", "waypoints":"place_id:\(destinations[1].placeID)" , "key":"\(APIKeyDir)"], encoding: URLEncoding.default, headers: nil) .validate().responseJSON() { (response) in
+            //place_id:\(destinations[1].placeID)
+            //["origin":"\(lat!),\(long!)", "destination":"place_id:\(destinations[0].placeID)", "waypoints":"" , "key":"\(APIKeyDir)"]
+            Alamofire.request("https://maps.googleapis.com/maps/api/directions/json", method: .get, parameters: params, encoding: URLEncoding.default, headers: nil) .validate().responseJSON() { (response) in
                 
                 //print("URL works")
                 
@@ -132,7 +147,7 @@ class MapViewController: UIViewController {
             marker.map = mapView
         }
         
-        listLikelyPlaces()
+        //listLikelyPlaces()
         
     }
     
@@ -140,6 +155,7 @@ class MapViewController: UIViewController {
         if let identifier = segue.identifier {
             if identifier == "toPlacesList" {
                 if let nextViewController = segue.destination as? PlaceViewController {
+                    listLikelyPlaces()
                     nextViewController.likelyPlaces = likelyPlaces
                     //print("LikelyPlaces has been passed: \(likelyPlaces)")
                 }
@@ -164,7 +180,7 @@ extension MapViewController: CLLocationManagerDelegate {
         }
         //print("Count is \(count)")
         //count += 1
-        listLikelyPlaces()
+        //listLikelyPlaces()
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {

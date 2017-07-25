@@ -94,6 +94,7 @@
                                                 <connections>
                                                     <action selector="searchButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="6Zq-e6-mdt"/>
                                                     <action selector="testButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="sAv-nn-VRe"/>
+                                                    <segue destination="cM3-jo-u4a" kind="show" identifier="unwindToHome" id="Cg2-0e-2Qx"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -120,7 +121,7 @@
                     <connections>
                         <outlet property="notCoolLabel" destination="YBk-0Z-lv4" id="3nY-K4-WG0"/>
                         <outlet property="tableView" destination="noS-vD-Wp4" id="zP0-Ca-JqC"/>
-                        <segue destination="Dbc-cc-q1u" kind="show" identifier="toBlueScreen" id="ga3-Ht-iEh"/>
+                        <segue destination="Dbc-cc-q1u" kind="show" identifier="toBlueScreen" id="Xap-db-V3r"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Za8-tD-wPC" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -212,8 +213,12 @@
                             <outlet property="delegate" destination="cM3-jo-u4a" id="eI1-kN-iGj"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <segue destination="MiY-Gx-pkR" kind="unwind" identifier="unwindToHome" unwindAction="unwindToHomeViewController:" id="hZh-hX-pNg"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="708-Mw-bPP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="MiY-Gx-pkR" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1020" y="891"/>
         </scene>

@@ -9,26 +9,34 @@
 import Foundation
 import UIKit
 import GooglePlaces
-import GoogleMaps
-import Alamofire
-import AlamofireNetworkActivityIndicator
 import SwiftyJSON
 
 class Location {
     
-    let name: String
-    let lat: CLLocationDegrees
-    let long: CLLocationDegrees
-    let coord: CLLocationCoordinate2D
-    let address: String
-    let placeID: String
-    let attributedText: String!
+    var name: String = ""
+    var lat: CLLocationDegrees = CLLocationDegrees()
+    var long: CLLocationDegrees = CLLocationDegrees()
+    var coord: CLLocationCoordinate2D = CLLocationCoordinate2D()
+    var address: String = ""
+    var placeID: String = ""
+    var attributedText: String!
     var imageURL: URL!
     final let APIKey: String = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
     var imageView: UIImageView!
     
     
+    
+    init(json: JSON) {
+        self.name = json["name"].stringValue
+        self.lat = CLLocationDegrees(json["geometry"]["location"]["latitude"].doubleValue)
+        self.long = CLLocationDegrees(json["geometry"]["location"]["longitude"].doubleValue)
+        self.coord = CLLocationCoordinate2D(latitude: self.lat, longitude: self.long)
+        self.address = json["formatted_address"].stringValue
+        self.placeID = json["place_id"].stringValue
+    }
+    
     init(place: GMSPlace) {
+        
         self.name = place.name
         self.attributedText = place.attributions?.string
         self.coord = place.coordinate

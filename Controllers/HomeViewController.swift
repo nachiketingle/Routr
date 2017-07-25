@@ -10,7 +10,9 @@ import Foundation
 import UIKit
 import GoogleMaps
 import GooglePlaces
-
+import Alamofire
+import AlamofireNetworkActivityIndicator
+import SwiftyJSON
 
 class HomeViewController: UIViewController {
     @IBOutlet weak var notCoolLabel: UILabel!
@@ -20,7 +22,9 @@ class HomeViewController: UIViewController {
     var destinations:[Location] = []
     var destinationCells: [ListDestinationsTableViewCell] = []
     
+    var selectedPlace: String?
     var count = 0
+    let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +86,37 @@ class HomeViewController: UIViewController {
     
     @IBAction func unwindToHomeViewController(_ segue: UIStoryboardSegue) {
         
+        if let place = selectedPlace {
+            
+            notCoolLabel.text = "LOADING..."
+            
+            let url = URL(string: "https://maps.googleapis.com/maps/api/place/details/json?placeid=\(place)&key=\(APIKeyDir)")
+            
+            Alamofire.request(url!).validate().responseJSON { (response) in
+                switch response.result {
+                    
+                case .success:
+                    print("Success")
+                    if let value = response.result.value {
+                        let json = JSON(value)
+                        
+                        print("Status: \(json["status"])")
+                        if json["status"] == "OK"{
+                            self.destinations.append( Location( json: json["result"] ) )
+                        }
+                        
+                    }
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                }
+                
+                self.notCoolLabel.text = "Finished"
+                self.tableView.reloadData()
+            }
+            
+        }
+        
+        tableView.reloadData()
         // for now, simply defining the method is sufficient.
         // we'll add code later
         
@@ -137,7 +172,7 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
     }
     
     func viewController(_ viewController: GMSAutocompleteViewController, didSelect prediction: GMSAutocompletePrediction) -> Bool {
-        print("Autocomplete election made!")
+        print("Autocomplete selection made!")
         return true
     }
     
