@@ -62,8 +62,7 @@ class MapViewController: UIViewController {
             let lat = locationManager.location?.coordinate.latitude
             let long = locationManager.location?.coordinate.longitude
             
-            //let url = URL(string: "https://maps.googleapis.com/maps/api/directions/json?origin=\(lat!),\(long!)&destination=place_id:\(destinations[0].placeID)&waypoints=place_id:\(destinations[1].placeID)&key=\(APIKeyDir)")
-            
+            var points: String = ""
             var params: [String : String] = [:]
             
             if !destinations.isEmpty {
@@ -81,13 +80,7 @@ class MapViewController: UIViewController {
                 }
                 params["key"] = APIKeyDir
             }
-            
-            //print("Place ID: \(destinations[0].placeID)")
-            //print("URL is made: \(url!)")
-            var points: String = ""
-            //Alamofire.request(url!).validate().responseJSON() { (response) in
-            //place_id:\(destinations[1].placeID)
-            //["origin":"\(lat!),\(long!)", "destination":"place_id:\(destinations[0].placeID)", "waypoints":"" , "key":"\(APIKeyDir)"]
+
             Alamofire.request("https://maps.googleapis.com/maps/api/directions/json", method: .get, parameters: params, encoding: URLEncoding.default, headers: nil) .validate().responseJSON() { (response) in
                 
                 //print("URL works")
@@ -155,8 +148,8 @@ class MapViewController: UIViewController {
         if let identifier = segue.identifier {
             if identifier == "toPlacesList" {
                 if let nextViewController = segue.destination as? PlaceViewController {
-                    listLikelyPlaces()
-                    nextViewController.likelyPlaces = likelyPlaces
+                    //listLikelyPlaces()
+                    //nextViewController.likelyPlaces = likelyPlaces
                     //print("LikelyPlaces has been passed: \(likelyPlaces)")
                 }
             } 
@@ -202,33 +195,6 @@ extension MapViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         locationManager.startUpdatingLocation()
         print("Error: \(error.localizedDescription)")
-    }
-    
-    
-    
-    func listLikelyPlaces() {
-        likelyPlaces.removeAll()
-        
-        placesClient.currentPlace (callback:{ (placeLikelihoods, error) -> Void in
-            if let error = error {
-                print("Current place error: \(error.localizedDescription)")
-                return
-            }
-        
-            if let likelihoodList = placeLikelihoods {
-                //print("Starting to add places")
-                self.count = 0
-                for likelihood in likelihoodList.likelihoods {
-                    let place = likelihood.place
-                    //print("This place was added: \(place.name)")
-                    self.likelyPlaces.append(place)
-                    self.count += 1
-                }
-                print("Finished adding places: \(self.count)")
-            }
-            
-        })
-        
     }
     
 }

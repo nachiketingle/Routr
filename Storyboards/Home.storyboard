@@ -84,7 +84,7 @@
                                                 </constraints>
                                                 <state key="normal" title="Add a Place"/>
                                                 <connections>
-                                                    <action selector="autocompleteButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="rkP-F7-5N8"/>
+                                                    <segue destination="cM3-jo-u4a" kind="show" id="mNp-j8-PNN"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Co-1O-8bN">
@@ -92,9 +92,7 @@
                                                 <color key="backgroundColor" red="0.51340925690000005" green="0.95495611430000005" blue="0.49807274340000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="Don't Press"/>
                                                 <connections>
-                                                    <action selector="searchButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="6Zq-e6-mdt"/>
-                                                    <action selector="testButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="sAv-nn-VRe"/>
-                                                    <segue destination="cM3-jo-u4a" kind="show" identifier="unwindToHome" id="Cg2-0e-2Qx"/>
+                                                    <action selector="testButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="mmb-XO-NZt"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -119,6 +117,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="J2w-5B-M3J"/>
                     <connections>
+                        <outlet property="autocompleteButton" destination="mN2-Xj-L8w" id="b9z-IM-5iA"/>
+                        <outlet property="mapButton" destination="VQk-ZI-sgx" id="teU-Gl-zKP"/>
                         <outlet property="notCoolLabel" destination="YBk-0Z-lv4" id="3nY-K4-WG0"/>
                         <outlet property="tableView" destination="noS-vD-Wp4" id="zP0-Ca-JqC"/>
                         <segue destination="Dbc-cc-q1u" kind="show" identifier="toBlueScreen" id="Xap-db-V3r"/>
@@ -235,7 +235,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tmV-kW-i1S">
-                                <rect key="frame" x="164" y="305" width="46" height="57"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="37"/>
                                 <state key="normal" title="HI!">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -247,8 +247,11 @@
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="tmV-kW-i1S" firstAttribute="leading" secondItem="99r-aG-afl" secondAttribute="leading" id="DYv-Lz-2qA"/>
                             <constraint firstItem="tmV-kW-i1S" firstAttribute="centerX" secondItem="99r-aG-afl" secondAttribute="centerX" id="OMw-ah-Oh6"/>
-                            <constraint firstItem="tmV-kW-i1S" firstAttribute="centerY" secondItem="99r-aG-afl" secondAttribute="centerY" id="UoO-k1-iWn"/>
+                            <constraint firstItem="HiR-JQ-qta" firstAttribute="top" secondItem="tmV-kW-i1S" secondAttribute="bottom" id="RF5-f0-qwS"/>
+                            <constraint firstItem="tmV-kW-i1S" firstAttribute="top" secondItem="DUb-od-W2s" secondAttribute="bottom" id="WYO-of-glB"/>
+                            <constraint firstAttribute="trailing" secondItem="tmV-kW-i1S" secondAttribute="trailing" id="dkw-R5-MpT"/>
                         </constraints>
                     </view>
                 </viewController>

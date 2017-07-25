@@ -15,14 +15,19 @@ import AlamofireNetworkActivityIndicator
 import SwiftyJSON
 
 class HomeViewController: UIViewController {
+    @IBOutlet weak var autocompleteButton: UIButton!
+    
+    @IBOutlet weak var mapButton: UIButton!
+    
     @IBOutlet weak var notCoolLabel: UILabel!
     
     @IBOutlet weak var tableView: UITableView!
     
     var destinations:[Location] = []
-    var destinationCells: [ListDestinationsTableViewCell] = []
+    //var destinationCells: [ListDestinationsTableViewCell] = []
     
     var selectedPlace: String?
+    var notCoolTexts = NotCoolTexts()
     var count = 0
     let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
     
@@ -41,37 +46,15 @@ class HomeViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     @IBAction func testButtonPressed(_ sender: UIButton) {
-        
-        if count < 10{
-            notCoolLabel.text = "Not Cool\nFollow Directions"
-        } else if count < 20 {
-            notCoolLabel.text = "Plz Stop"
-        } else if count < 30 {
-            notCoolLabel.text = "Help, I'm scared..."
-        } else if count < 40 {
-            notCoolLabel.text = "I give up"
-        } else if count < 50 {
-            notCoolLabel.text = "YOU SHALL DIE!!  jk\nBut actually stop tho"
-        } else if count < 60 {
-            notCoolLabel.text = ""
-        } else if count == 63 {
-            notCoolLabel.text = "You know what?"
-        } else if count == 64 {
-            notCoolLabel.text = "BLUE SCREEN OF DEATH IN 3..."
-        } else if count == 65 {
-            notCoolLabel.text = "2..."
-        } else if count == 66 {
-            notCoolLabel.text = "1..."
-        } else if count == 67 {
-            notCoolLabel.text = "Last Chance...."
-        } else if count == 68 {
-            notCoolLabel.text = "K NOW YOU DESERVE IT"
-        } else if count == 69 {
-            notCoolLabel.text = "bye"
-        } else if count >= 70 {
-            notCoolLabel.text = ""
-            count = 0
+        if notCoolTexts.arrayCounter >= notCoolTexts.notCoolArray.count-1 {
+            notCoolTexts.arrayCounter = 0
             performSegue(withIdentifier: "toBlueScreen", sender: self)
+        }
+        notCoolLabel.text = notCoolTexts.notCoolArray[notCoolTexts.arrayCounter]
+        notCoolTexts.arrayCounter += 1
+        if notCoolLabel.text == notCoolTexts.disablePhrase {
+            mapButton.isEnabled = false
+            autocompleteButton.isEnabled = false
         }
         count += 1
     }
@@ -82,6 +65,14 @@ class HomeViewController: UIViewController {
     }
     @IBAction func searchButtonPressed(_ sender: Any) {
             print("Button pressed")
+    }
+    
+    @IBAction func autocompleteButtonPressed(_ sender: UIButton) {
+        
+        let autocompleteController = GMSAutocompleteViewController()
+        autocompleteController.delegate = self
+        present(autocompleteController, animated: true, completion: nil)
+        
     }
     
     @IBAction func unwindToHomeViewController(_ segue: UIStoryboardSegue) {
@@ -134,13 +125,7 @@ class HomeViewController: UIViewController {
         print("End of segue")
     }
     
-    @IBAction func autocompleteButtonPressed(_ sender: UIButton) {
-        
-        let autocompleteController = GMSAutocompleteViewController()
-        autocompleteController.delegate = self
-        present(autocompleteController, animated: true, completion: nil)
-        
-    }
+
     
 }
 
@@ -161,7 +146,9 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         print(destinationCells)
          */
         notCoolLabel.text = "Marker shall be placed on map"
-        count = 0
+        notCoolTexts.arrayCounter = 0
+        mapButton.isEnabled = true
+        autocompleteButton.isEnabled = true
         tableView.reloadData()
         dismiss(animated: true, completion: nil)
         //performSegue(withIdentifier: "toMapView", sender: self)
