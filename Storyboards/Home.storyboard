@@ -25,12 +25,21 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="ceO-qq-1vs">
                                 <rect key="frame" x="16" y="64" width="343" height="573"/>
                                 <subviews>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="noS-vD-Wp4">
-                                        <rect key="frame" x="0.0" y="0.0" width="343" height="462"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select A Destination Below" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VYC-2s-J85">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="dyX-8M-C3T"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="31" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="noS-vD-Wp4">
+                                        <rect key="frame" x="0.0" y="65" width="343" height="448"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="listDestinationsTableViewCell" rowHeight="50" id="gih-e7-hzo" customClass="ListDestinationsTableViewCell" customModule="GoogleMapsAPITest" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="343" height="50"/>
+                                                <rect key="frame" x="0.0" y="31" width="343" height="50"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gih-e7-hzo" id="3lw-xP-iPb">
                                                     <rect key="frame" x="0.0" y="0.0" width="343" height="49.5"/>
@@ -55,7 +64,7 @@
                                         </prototypes>
                                     </tableView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YBk-0Z-lv4">
-                                        <rect key="frame" x="0.0" y="477" width="343" height="51"/>
+                                        <rect key="frame" x="0.0" y="528" width="343" height="0.0"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="26"/>
                                         <color key="textColor" red="0.59813213832487311" green="0.039749850489282541" blue="0.076439634412549834" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
@@ -102,7 +111,9 @@
                                     <constraint firstAttribute="trailing" secondItem="noS-vD-Wp4" secondAttribute="trailing" id="HpK-av-UW7"/>
                                     <constraint firstItem="yJB-mp-SBR" firstAttribute="centerX" secondItem="ceO-qq-1vs" secondAttribute="centerX" id="Hxf-u5-5xl"/>
                                     <constraint firstItem="noS-vD-Wp4" firstAttribute="centerX" secondItem="ceO-qq-1vs" secondAttribute="centerX" id="O7f-Nk-Sn2"/>
+                                    <constraint firstItem="VYC-2s-J85" firstAttribute="leading" secondItem="ceO-qq-1vs" secondAttribute="leading" id="PAj-Cw-V2D"/>
                                     <constraint firstItem="noS-vD-Wp4" firstAttribute="leading" secondItem="ceO-qq-1vs" secondAttribute="leading" id="PV2-aQ-UDT"/>
+                                    <constraint firstAttribute="trailing" secondItem="VYC-2s-J85" secondAttribute="trailing" id="gJ6-B1-l2C"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -118,6 +129,7 @@
                     <navigationItem key="navigationItem" id="J2w-5B-M3J"/>
                     <connections>
                         <outlet property="autocompleteButton" destination="mN2-Xj-L8w" id="b9z-IM-5iA"/>
+                        <outlet property="finalDestinationLabel" destination="VYC-2s-J85" id="P1x-lS-kpy"/>
                         <outlet property="mapButton" destination="VQk-ZI-sgx" id="teU-Gl-zKP"/>
                         <outlet property="notCoolLabel" destination="YBk-0Z-lv4" id="3nY-K4-WG0"/>
                         <outlet property="tableView" destination="noS-vD-Wp4" id="zP0-Ca-JqC"/>
@@ -190,9 +202,9 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ChP-m2-zL4">
-                                            <rect key="frame" x="166.5" y="11" width="42" height="21"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ChP-m2-zL4">
+                                            <rect key="frame" x="164.5" y="10" width="46.5" height="23"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                             <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>

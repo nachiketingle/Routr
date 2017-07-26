@@ -15,18 +15,17 @@ import AlamofireNetworkActivityIndicator
 import SwiftyJSON
 
 class HomeViewController: UIViewController {
+    @IBOutlet weak var finalDestinationLabel: UILabel!
     @IBOutlet weak var autocompleteButton: UIButton!
-    
     @IBOutlet weak var mapButton: UIButton!
-    
     @IBOutlet weak var notCoolLabel: UILabel!
-    
     @IBOutlet weak var tableView: UITableView!
     
     var destinations:[Location] = []
+    var finalDestination: Location?
     //var destinationCells: [ListDestinationsTableViewCell] = []
     
-    var selectedPlace: String?
+    var selectedPlace: String? = nil
     var notCoolTexts = NotCoolTexts()
     var count = 0
     let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
@@ -104,7 +103,11 @@ class HomeViewController: UIViewController {
                 self.notCoolLabel.text = "Finished"
                 self.tableView.reloadData()
             }
-            
+            selectedPlace = nil
+        }
+        
+        if let place = finalDestination {
+            destinations.append(place)
         }
         
         tableView.reloadData()
@@ -118,7 +121,13 @@ class HomeViewController: UIViewController {
         if let identifier = segue.identifier {
             if identifier == "toMapView" {
                 if let nextViewController = segue.destination as? MapViewController {
-                    nextViewController.destinationList = destinations
+                    for count in 0...destinations.count-1 {
+                        if destinations[count].placeID == finalDestination?.placeID {
+                            destinations.remove(at: count)
+                        }
+                    }
+                    nextViewController.destinations = destinations
+                    nextViewController.endPoint = finalDestination
                 }
             } 
         }
@@ -211,6 +220,8 @@ extension HomeViewController: UITableViewDataSource {
 
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        finalDestination = destinations[indexPath.row]
+        finalDestinationLabel.text = finalDestination?.name
         print("Selection made")
     }
 }

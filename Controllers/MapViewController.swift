@@ -26,8 +26,9 @@ class MapViewController: UIViewController {
     var likelyPlaces: [GMSPlace] = []
     var selectedPlace: GMSPlace?
     
-    var count: Int = 0;
-    var destinationList: [Location]?
+    var count: Int = 0
+    var destinations: [Location]!
+    var endPoint: Location!
     
     let APIKey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
     let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
@@ -44,9 +45,10 @@ class MapViewController: UIViewController {
         
         placesClient = GMSPlacesClient.shared()
         
-        let camera = GMSCameraPosition.camera(withLatitude: 48.8566,
-                                              longitude: 2.3522,
+        let camera = GMSCameraPosition.camera(withLatitude: (locationManager.location?.coordinate.latitude)!,
+                                              longitude: (locationManager.location?.coordinate.longitude)!,
                                               zoom: zoomLevel)
+        
         
         mapView = GMSMapView.map(withFrame: view.bounds, camera: camera)
         mapView.settings.myLocationButton = true
@@ -57,30 +59,29 @@ class MapViewController: UIViewController {
         
         print("Normal view stuff works.")
         
-        if let destinations = destinationList {
-            currentLocation = locationManager.location
-            let lat = locationManager.location?.coordinate.latitude
-            let long = locationManager.location?.coordinate.longitude
+        currentLocation = locationManager.location
+        let lat = locationManager.location?.coordinate.latitude
+        let long = locationManager.location?.coordinate.longitude
+        
+        var points: String = ""
+        var params: [String : String] = [:]
+        
+        if !destinations.isEmpty {
             
-            var points: String = ""
-            var params: [String : String] = [:]
+            params["origin"] = "\(lat!),\(long!)"
+            params["destination"] = "place_id:\(endPoint.placeID)"
             
-            if !destinations.isEmpty {
+            if destinations.count > 1 {
+                var waypoints: String = "optimize:true"
                 
-                params["origin"] = "\(lat!),\(long!)"
-                params["destination"] = "place_id:\(destinations[0].placeID)"
-                
-                if destinations.count > 1 {
-                    var waypoints: String = "optimize:true"
-
-                    for count in 1...destinations.count-1 {
-                        waypoints.append("|place_id:\(destinations[count].placeID)")
-                    }
-                    params["waypoints"] = waypoints
+                for count in 0...destinations.count-1 {
+                    waypoints.append("|place_id:\(destinations[count].placeID)")
                 }
-                params["key"] = APIKeyDir
+                params["waypoints"] = waypoints
             }
-
+            params["key"] = APIKeyDir
+            
+            
             Alamofire.request("https://maps.googleapis.com/maps/api/directions/json", method: .get, parameters: params, encoding: URLEncoding.default, headers: nil) .validate().responseJSON() { (response) in
                 
                 //print("URL works")
@@ -95,22 +96,29 @@ class MapViewController: UIViewController {
                         print("JSON Status is : \(json["status"])")
                         print("JSON error: \(json["error_message"])")
                         print("Summary: \(json["routes"][0]["summary"])")
-                        print("Overview_polyline: \(json["routes"][0]["overview_polyline"]["points"])")
+                        //print("Overview_polyline: \(json["routes"][0]["overview_polyline"]["points"])")
                         points = json["routes"][0]["overview_polyline"]["points"].stringValue
                         
                         
                         let path = GMSMutablePath(fromEncodedPath: points)
                         let route = GMSPolyline(path: path)
                         route.strokeWidth = 3.0
-                        route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.5)
+                        route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.3)
                         route.map = self.mapView
                         
-                        for place in destinations {
+                        
+                        
+                        for place in self.destinations {
                             let marker = GMSMarker(position: place.coord)
                             marker.title = place.name
                             marker.snippet = place.address
                             marker.map = self.mapView
+                            print("Marker place: \(marker.title!)")
                         }
+                        
+                        let bounds = GMSCoordinateBounds.init(path: path!)
+                        let position = self.mapView.camera(for: bounds, insets: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50) )!
+                        self.mapView.animate(to: position)
                         
                     }
                     
@@ -118,7 +126,6 @@ class MapViewController: UIViewController {
                     print("Error: \(error.localizedDescription)")
                 }
             }
-            
         }
         
         // Add the map to the view, hide it until we've got a location update.
@@ -147,12 +154,12 @@ class MapViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let identifier = segue.identifier {
             if identifier == "toPlacesList" {
-                if let nextViewController = segue.destination as? PlaceViewController {
-                    //listLikelyPlaces()
-                    //nextViewController.likelyPlaces = likelyPlaces
-                    //print("LikelyPlaces has been passed: \(likelyPlaces)")
-                }
-            } 
+                //if let nextViewController = segue.destination as? PlaceViewController {
+                //listLikelyPlaces()
+                //nextViewController.likelyPlaces = likelyPlaces
+                //print("LikelyPlaces has been passed: \(likelyPlaces)")
+                //}
+            }
         }
     }
 }
@@ -160,6 +167,7 @@ class MapViewController: UIViewController {
 extension MapViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        return
         let location: CLLocation = locations.last!
         //print("Location \(location)")
         
@@ -196,5 +204,16 @@ extension MapViewController: CLLocationManagerDelegate {
         locationManager.startUpdatingLocation()
         print("Error: \(error.localizedDescription)")
     }
-    
 }
+/*
+ extension MapViewController: GMSMapViewDelegate {
+ 
+ func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
+ 
+ 
+ 
+ return true
+ }
+ 
+ }
+ */

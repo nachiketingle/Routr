@@ -61,9 +61,13 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "predictionCell", for: indexPath) as! ListPredictionsTableViewCell
         //if let places = predictedPlaces {
-            cell.predictionLabel.text = "Hello! This is the cell for \(predictedPlaces[indexPath.row])"
+            cell.predictionLabel.text = predictedPlaces[indexPath.row].name
         //}
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return self.tableView.frame.size.height / 5
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -72,34 +76,7 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
     }
     
     func updateSearchResults(for searchController: UISearchController) {
-        /*
-        if let searchText = searchController.searchBar.text?.replacingOccurrences(of: " ", with: "+"), !searchText.isEmpty {
-            /*
-            let url = URL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(searchText)&location=0,0&radius=20000000&key=\(APIKey)")
-            Alamofire.request(url!).validate().responseJSON() { (response) in
-                switch response.result {
-                    
-                case .success:
-                    
-                    if let value = response.result.value {
-                        let json = JSON(value)
-                        print("JSON Status is : \(json["status"])")
-                    }
-                    
-                case .failure(let error):
-                    print("Error: \(error.localizedDescription)")
-                }
-            }
-            */
-            filteredPlaces = unfilteredPlaces.filter{ places in
-                return places.lowercased().contains(searchText.lowercased())
-            }
-        } else {
-            filteredPlaces = unfilteredPlaces
-        }
-        
-        tableView.reloadData()
-        */
+        //DO NOTHING HERE
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
