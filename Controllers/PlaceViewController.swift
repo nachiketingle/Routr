@@ -55,7 +55,6 @@ class PlaceViewController: UIViewController {
     
     func listLikelyPlaces() {
         likelyPlaces.removeAll()
-        
         placesClient.currentPlace (callback:{ (placeLikelihoods, error) -> Void in
             if let error = error {
                 print("Current place error: \(error.localizedDescription)")

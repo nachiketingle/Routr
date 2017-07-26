@@ -70,6 +70,10 @@ class MapViewController: UIViewController {
         if !destinations.isEmpty {
             
             params["origin"] = "\(lat!),\(long!)"
+            
+            if endPoint == nil {
+                endPoint = destinations[0]
+            }
             params["destination"] = "place_id:\(endPoint.placeID)"
             
             if destinations.count > 1 {
