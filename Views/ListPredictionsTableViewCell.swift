@@ -13,5 +13,6 @@ class ListPredictionsTableViewCell: UITableViewCell {
     
     @IBOutlet weak var predictionLabel: UILabel!
     
+    @IBOutlet weak var secondaryLabel: UILabel!
     
 }

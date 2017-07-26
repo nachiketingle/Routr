@@ -61,7 +61,8 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "predictionCell", for: indexPath) as! ListPredictionsTableViewCell
         //if let places = predictedPlaces {
-            cell.predictionLabel.text = predictedPlaces[indexPath.row].name
+        cell.predictionLabel.text = predictedPlaces[indexPath.row].name
+        cell.secondaryLabel.text = predictedPlaces[indexPath.row].secondaryText
         //}
         return cell
     }
@@ -83,26 +84,26 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
         if let searchText = searchController.searchBar.text?.replacingOccurrences(of: " ", with: "+"), !searchText.isEmpty {
             
             
-             let url = URL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(searchText)&location=0,0&radius=20000000&key=\(APIKey)")
-             Alamofire.request(url!).validate().responseJSON() { (response) in
-             switch response.result {
-             
-             case .success:
-             
-                if let value = response.result.value {
-                    let json = JSON(value)
-                    print("JSON Status is : \(json["status"])")
-                    print("JSON Error: \(json["error_message"])")
-                    self.predictedPlaces.removeAll()
+            let url = URL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(searchText)&location=0,0&radius=20000000&key=\(APIKey)")
+            Alamofire.request(url!).validate().responseJSON() { (response) in
+                switch response.result {
                     
-                    for count in 0...json["predictions"].count-1 {
-                        self.predictedPlaces.append(BasicLocation(json: json["predictions"][count]))
-                        print("Appended: \(self.predictedPlaces[count].name)")
+                case .success:
+                    
+                    if let value = response.result.value {
+                        let json = JSON(value)
+                        print("JSON Status is : \(json["status"])")
+                        print("JSON Error: \(json["error_message"])")
+                        self.predictedPlaces.removeAll()
+                        
+                        for count in 0...json["predictions"].count-1 {
+                            self.predictedPlaces.append(BasicLocation(json: json["predictions"][count]))
+                            print("Appended: \(self.predictedPlaces[count].name)")
+                        }
+                        self.tableView.reloadData()
                     }
-                    self.tableView.reloadData()
-                }
-             
-             case .failure(let error):
+                    
+                case .failure(let error):
                     print("Error: \(error.localizedDescription)")
                 }
             }

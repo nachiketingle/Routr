@@ -105,10 +105,7 @@ class HomeViewController: UIViewController {
             }
             selectedPlace = nil
         }
-        
-        if let place = finalDestination {
-            destinations.append(place)
-        }
+
         
         tableView.reloadData()
         // for now, simply defining the method is sufficient.
@@ -117,21 +114,16 @@ class HomeViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        print("Starting to segue")
+        print("Starting to segue 1.0")
         if let identifier = segue.identifier {
             if identifier == "toMapView" {
                 if let nextViewController = segue.destination as? MapViewController {
-                    for count in 0...destinations.count-1 {
-                        if destinations[count].placeID == finalDestination?.placeID {
-                            destinations.remove(at: count)
-                        }
-                    }
                     nextViewController.destinations = destinations
                     nextViewController.endPoint = finalDestination
                 }
             } 
         }
-        print("End of segue")
+        print("End of segue 1.0")
     }
     
 

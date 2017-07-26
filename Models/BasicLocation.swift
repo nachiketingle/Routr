@@ -12,10 +12,12 @@ import SwiftyJSON
 struct BasicLocation {
     
     let name: String
+    let secondaryText: String
     let placeID: String
     
     init(json: JSON) {
-        name = json["description"].stringValue
+        name = json["structured_formatting"]["main_text"].stringValue
+        secondaryText = json["structured_formatting"]["secondary_text"].stringValue
         placeID = json["place_id"].stringValue
     }
 }

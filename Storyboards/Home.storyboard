@@ -187,7 +187,7 @@
         <scene sceneID="9Nx-hQ-Tv4">
             <objects>
                 <tableViewController id="cM3-jo-u4a" customClass="PredictionsTableViewController" customModule="GoogleMapsAPITest" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Td3-eX-BTd">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" id="Td3-eX-BTd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -195,16 +195,22 @@
                         <color key="sectionIndexColor" red="0.21960784310000001" green="0.59215686270000001" blue="0.94117647059999998" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="sectionIndexBackgroundColor" red="0.51340925690000005" green="0.95495611430000005" blue="0.49807274340000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="predictionCell" id="J6f-56-cmc" customClass="ListPredictionsTableViewCell" customModule="GoogleMapsAPITest" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="predictionCell" rowHeight="70" id="J6f-56-cmc" customClass="ListPredictionsTableViewCell" customModule="GoogleMapsAPITest" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="28" width="375" height="70"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="J6f-56-cmc" id="IOD-Dd-vSK">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="69.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ChP-m2-zL4">
-                                            <rect key="frame" x="164.5" y="10" width="46.5" height="23"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Prediction Name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ChP-m2-zL4">
+                                            <rect key="frame" x="117" y="23.5" width="141.5" height="23"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hopefully Prediction Address" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CmK-fZ-qg4">
+                                            <rect key="frame" x="99.5" y="51.5" width="176.5" height="17.5"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
@@ -213,10 +219,14 @@
                                     <constraints>
                                         <constraint firstItem="ChP-m2-zL4" firstAttribute="centerY" secondItem="IOD-Dd-vSK" secondAttribute="centerY" id="Efb-jP-dlg"/>
                                         <constraint firstItem="ChP-m2-zL4" firstAttribute="centerX" secondItem="IOD-Dd-vSK" secondAttribute="centerX" id="kpl-h3-f62"/>
+                                        <constraint firstItem="CmK-fZ-qg4" firstAttribute="top" secondItem="ChP-m2-zL4" secondAttribute="bottom" constant="5" id="nYx-d3-h0n"/>
+                                        <constraint firstAttribute="bottom" secondItem="CmK-fZ-qg4" secondAttribute="bottom" id="nid-Fc-3cS"/>
+                                        <constraint firstItem="CmK-fZ-qg4" firstAttribute="centerX" secondItem="IOD-Dd-vSK" secondAttribute="centerX" id="yDL-LL-9k4"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
                                     <outlet property="predictionLabel" destination="ChP-m2-zL4" id="Wpn-pl-iPl"/>
+                                    <outlet property="secondaryLabel" destination="CmK-fZ-qg4" id="4b2-t9-uw4"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -232,7 +242,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="708-Mw-bPP" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="MiY-Gx-pkR" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="1020" y="891"/>
+            <point key="canvasLocation" x="1020" y="890.10494752623697"/>
         </scene>
         <!--Blue Screen View Controller-->
         <scene sceneID="lvE-zt-faF">
@@ -266,6 +276,9 @@
                             <constraint firstAttribute="trailing" secondItem="tmV-kW-i1S" secondAttribute="trailing" id="dkw-R5-MpT"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="xpx-fZ-06n">
+                        <barButtonItem key="leftBarButtonItem" enabled="NO" title=" " id="ivQ-hb-I3S"/>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cag-vg-7MQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

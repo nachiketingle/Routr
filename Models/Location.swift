@@ -28,8 +28,8 @@ class Location {
     
     init(json: JSON) {
         self.name = json["name"].stringValue
-        self.lat = CLLocationDegrees(json["geometry"]["location"]["latitude"].doubleValue)
-        self.long = CLLocationDegrees(json["geometry"]["location"]["longitude"].doubleValue)
+        self.lat = CLLocationDegrees(json["geometry"]["location"]["lat"].doubleValue)
+        self.long = CLLocationDegrees(json["geometry"]["location"]["lng"].doubleValue)
         self.coord = CLLocationCoordinate2D(latitude: self.lat, longitude: self.long)
         self.address = json["formatted_address"].stringValue
         self.placeID = json["place_id"].stringValue

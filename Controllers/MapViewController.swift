@@ -29,6 +29,7 @@ class MapViewController: UIViewController {
     var count: Int = 0
     var destinations: [Location]!
     var endPoint: Location!
+    var updated = false
     
     let APIKey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
     let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
@@ -42,11 +43,16 @@ class MapViewController: UIViewController {
         locationManager.distanceFilter = 50
         locationManager.startUpdatingLocation()
         locationManager.delegate = self
+        currentLocation = locationManager.location
+        
         
         placesClient = GMSPlacesClient.shared()
         
-        let camera = GMSCameraPosition.camera(withLatitude: (locationManager.location?.coordinate.latitude)!,
-                                              longitude: (locationManager.location?.coordinate.longitude)!,
+        let lat = currentLocation?.coordinate.latitude
+        let long = currentLocation?.coordinate.longitude
+        
+        let camera = GMSCameraPosition.camera(withLatitude: lat!,
+                                              longitude: long!,
                                               zoom: zoomLevel)
         
         
@@ -57,11 +63,6 @@ class MapViewController: UIViewController {
         //Creates current location marker (blue dot)
         mapView.isMyLocationEnabled = true
         
-        print("Normal view stuff works.")
-        
-        currentLocation = locationManager.location
-        let lat = locationManager.location?.coordinate.latitude
-        let long = locationManager.location?.coordinate.longitude
         
         var points: String = ""
         var params: [String : String] = [:]
@@ -75,7 +76,9 @@ class MapViewController: UIViewController {
                 var waypoints: String = "optimize:true"
                 
                 for count in 0...destinations.count-1 {
-                    waypoints.append("|place_id:\(destinations[count].placeID)")
+                    if endPoint.placeID != destinations[count].placeID {
+                        waypoints.append("|place_id:\(destinations[count].placeID)")
+                    }
                 }
                 params["waypoints"] = waypoints
             }
@@ -106,14 +109,13 @@ class MapViewController: UIViewController {
                         route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.3)
                         route.map = self.mapView
                         
-                        
-                        
                         for place in self.destinations {
                             let marker = GMSMarker(position: place.coord)
                             marker.title = place.name
                             marker.snippet = place.address
+                            
                             marker.map = self.mapView
-                            print("Marker place: \(marker.title!)")
+                            print("Marker place: \(marker.title!), \(marker.position)")
                         }
                         
                         let bounds = GMSCoordinateBounds.init(path: path!)
@@ -148,7 +150,6 @@ class MapViewController: UIViewController {
         }
         
         //listLikelyPlaces()
-        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -167,7 +168,9 @@ class MapViewController: UIViewController {
 extension MapViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        return
+        if updated {
+            return
+        }
         let location: CLLocation = locations.last!
         //print("Location \(location)")
         
@@ -179,6 +182,8 @@ extension MapViewController: CLLocationManagerDelegate {
         } else {
             mapView.animate(to: camera)
         }
+        
+        updated = true
         //print("Count is \(count)")
         //count += 1
         //listLikelyPlaces()
