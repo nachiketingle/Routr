@@ -82,7 +82,7 @@
                                                 <state key="normal" title="MAP"/>
                                                 <connections>
                                                     <action selector="mapButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="MMj-Aa-zgE"/>
-                                                    <segue destination="Nak-Lv-h2b" kind="presentation" identifier="toMapView" id="toW-Fh-IVG"/>
+                                                    <segue destination="Nak-Lv-h2b" kind="show" identifier="toMapView" id="toW-Fh-IVG"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mN2-Xj-L8w">
