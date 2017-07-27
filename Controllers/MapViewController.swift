@@ -14,6 +14,7 @@ import Alamofire
 import AlamofireImage
 import AlamofireNetworkActivityIndicator
 import SwiftyJSON
+import Presentr
 
 class MapViewController: UIViewController {
     
@@ -33,10 +34,13 @@ class MapViewController: UIViewController {
     
     let APIKey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
     let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
+    let controller = PlaceViewController()
+    let presenter = Presentr(presentationType: .popup)
     
     override func viewDidLoad() {
         
         print("Started to load MapViewController")
+        
         //set up location manager
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
@@ -245,6 +249,15 @@ extension MapViewController: GMSMapViewDelegate {
         navigationItem.title = "Marker tapped"
         selectMarkerLocation = marker.position
         print("Have set marker location")
+        /*
+        controller.lat = selectMarkerLocation?.latitude
+        controller.long = selectMarkerLocation?.longitude
+        presenter.blurBackground = true
+        presenter.roundCorners = true
+        presenter.dismissOnTap = true
+        presenter.dismissOnSwipe = false
+        customPresentViewController(presenter, viewController: controller, animated: true, completion: nil)
+ */
         performSegue(withIdentifier: "toPlacesList", sender: self)
         return true
     }
