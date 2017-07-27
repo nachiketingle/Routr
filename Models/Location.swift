@@ -22,7 +22,7 @@ class Location {
     var attributedText: String!
     var imageURL: URL!
     final let APIKey: String = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
-    var imageView: UIImageView!
+    var imageView: UIImageView = UIImageView()
     
     
     
@@ -33,6 +33,9 @@ class Location {
         self.coord = CLLocationCoordinate2D(latitude: self.lat, longitude: self.long)
         self.address = json["formatted_address"].stringValue
         self.placeID = json["place_id"].stringValue
+        self.imageURL = URL(string: json["photos"][0]["html_attributions"][0].stringValue)
+        print("The ref is \(json["photos"][0]["photo_reference"])")
+        imageView.af_setImage(withURL: URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8")! )
     }
     
     init(place: GMSPlace) {

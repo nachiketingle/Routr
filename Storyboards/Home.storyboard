@@ -171,7 +171,7 @@
                                 <segue destination="ieU-Ru-QLx" kind="unwind" identifier="cancel" unwindAction="unwindToHomeViewController:" id="vA9-N1-PBJ"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Get Nearby Places" id="kIO-xv-rQ3">
+                        <barButtonItem key="rightBarButtonItem" title="Nearby Places" id="kIO-xv-rQ3">
                             <connections>
                                 <segue destination="u5z-ae-Q0h" kind="show" identifier="toPlacesList" id="gX3-Cs-Iqu"/>
                             </connections>

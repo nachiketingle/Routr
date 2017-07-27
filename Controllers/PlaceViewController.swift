@@ -17,14 +17,20 @@ import AlamofireNetworkActivityIndicator
 
 class PlaceViewController: UIViewController {
     
-    var likelyPlaces: [GMSPlace] = []
-    var selectedPlace: GMSPlace?
+    //var likelyPlaces: [GMSPlace] = []
+    var likelyPlaces: [Location] = []
+    //var selectedPlace: GMSPlace?
+    var selectedPlace: Location?
     var placesList: [Location] = []
-    let APIkey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
+    let APIKey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
+    let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
     var placesClient = GMSPlacesClient.shared()
     var count = 0
+    var lat: CLLocationDegrees!
+    var long: CLLocationDegrees!
+    
     @IBOutlet weak var tableView: UITableView!
-
+    
     override func viewDidLoad() {
         
         self.tableView.delegate = self
@@ -45,7 +51,7 @@ class PlaceViewController: UIViewController {
             if identifier == "selectionMade" {
                 if let nextViewController = segue.destination as? MapViewController {
                     nextViewController.selectedPlace = selectedPlace
-                    print("Selection has been made")
+                    print("Selection has been made \(nextViewController.count)")
                 }
             } else if identifier == "cancel" {
                 print("Cancel button is presesed")
@@ -55,38 +61,65 @@ class PlaceViewController: UIViewController {
     
     func listLikelyPlaces() {
         likelyPlaces.removeAll()
-        placesClient.currentPlace (callback:{ (placeLikelihoods, error) -> Void in
-            if let error = error {
-                print("Current place error: \(error.localizedDescription)")
-                return
-            }
-            
-            if let likelihoodList = placeLikelihoods {
-                //print("Starting to add places")
-                self.count = 0
-                for likelihood in likelihoodList.likelihoods {
-                    let place = likelihood.place
-                    //print("This place was added: \(place.name)")
-                    self.likelyPlaces.append(place)
-                    self.placesList.append( Location(place: place) )
-                    self.count += 1
-                }
-                //set number of places to just 10
-                if self.likelyPlaces.count > 10 {
-                    let range: ClosedRange<Int> = ClosedRange(uncheckedBounds: (lower: 10, upper: self.likelyPlaces.count - 1))
-                    self.likelyPlaces.removeSubrange(range)
-                }
-                if self.placesList.count > 10 {
-                    let range: ClosedRange<Int> = ClosedRange(uncheckedBounds: (lower: 10, upper: self.placesList.count - 1))
-                    self.placesList.removeSubrange(range)
-                }
-                
-                self.tableView.reloadData()
-                print("Finished adding places: \(self.count)")
-            }
-            
-        })
+        placesList.removeAll()
         
+        /*
+         placesClient.currentPlace (callback:{ (placeLikelihoods, error) -> Void in
+         if let error = error {
+         print("Current place error: \(error.localizedDescription)")
+         return
+         }
+         
+         if let likelihoodList = placeLikelihoods {
+         //print("Starting to add places")
+         self.count = 0
+         for likelihood in likelihoodList.likelihoods {
+         let place = likelihood.place
+         //print("This place was added: \(place.name)")
+         self.likelyPlaces.append(place)
+         self.placesList.append( Location(place: place) )
+         self.count += 1
+         }
+         //set number of places to just 10
+         if self.likelyPlaces.count > 10 {
+         let range: ClosedRange<Int> = ClosedRange(uncheckedBounds: (lower: 10, upper: self.likelyPlaces.count - 1))
+         self.likelyPlaces.removeSubrange(range)
+         }
+         if self.placesList.count > 10 {
+         let range: ClosedRange<Int> = ClosedRange(uncheckedBounds: (lower: 10, upper: self.placesList.count - 1))
+         self.placesList.removeSubrange(range)
+         }
+         
+         self.tableView.reloadData()
+         print("Finished adding places: \(self.count)")
+         }
+         
+         })
+         */
+
+        let url = URL(string: "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(lat!),\(long!)&radius=50000&key=\(APIKeyDir)")
+        print("Latitude: \(lat!), Longitude: \(long!)")
+        Alamofire.request(url!).validate().responseJSON() { (response) in
+            switch response.result {
+                
+            case .success:
+                if let value = response.result.value {
+                    let json = JSON(json: value)
+                    print("Got json: \(json["status"])")
+                    for count in 0...json["results"].count-1 {
+                        print("Count number \(count)")
+                        self.placesList.append( Location(json: json["results"][count]) )
+                        print("Appended: \(json["results"][count]["name"].stringValue)")
+                    }
+                    self.tableView.reloadData()
+                }
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+                
+            }
+            
+            
+        }
     }
     
 }
@@ -109,7 +142,7 @@ extension PlaceViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //print("Returning number of rows: \(likelyPlaces.count)")
         
-        return likelyPlaces.count
+        return placesList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -138,7 +171,7 @@ extension PlaceViewController: UITableViewDataSource {
 extension PlaceViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //print("Selection started")
-        selectedPlace = likelyPlaces[indexPath.row]
+        selectedPlace = placesList[indexPath.row]
         //print("Selection continued")
         performSegue(withIdentifier: "selectionMade", sender: self)
     }

@@ -20,11 +20,9 @@ class MapViewController: UIViewController {
     var locationManager = CLLocationManager()
     var currentLocation: CLLocation?
     var mapView: GMSMapView!
-    var placesClient: GMSPlacesClient!
     var zoomLevel: Float = 15.0
     
-    var likelyPlaces: [GMSPlace] = []
-    var selectedPlace: GMSPlace?
+    var selectedPlace: Location?
     
     var count: Int = 0
     var destinations: [Location]!
@@ -37,16 +35,12 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         
         print("Started to load")
-        locationManager = CLLocationManager()
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
         locationManager.distanceFilter = 50
         locationManager.startUpdatingLocation()
         locationManager.delegate = self
         currentLocation = locationManager.location
-        
-        
-        placesClient = GMSPlacesClient.shared()
         
         let lat = currentLocation?.coordinate.latitude
         let long = currentLocation?.coordinate.longitude
@@ -99,32 +93,27 @@ class MapViewController: UIViewController {
                     
                     if let value = response.result.value {
                         let json = JSON(value)
-                        //print("This was successful!")
-                        print("JSON Status is : \(json["status"])")
-                        print("JSON error: \(json["error_message"])")
-                        print("Summary: \(json["routes"][0]["summary"])")
-                        //print("Overview_polyline: \(json["routes"][0]["overview_polyline"]["points"])")
-                        points = json["routes"][0]["overview_polyline"]["points"].stringValue
-                        
-                        
-                        let path = GMSMutablePath(fromEncodedPath: points)
-                        let route = GMSPolyline(path: path)
-                        route.strokeWidth = 3.0
-                        route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.3)
-                        route.map = self.mapView
-                        
-                        for place in self.destinations {
-                            let marker = GMSMarker(position: place.coord)
-                            marker.title = place.name
-                            marker.snippet = place.address
+                        if json["status"] == "OK" {
+                            //print("This was successful!")
+                            print("JSON Status is : \(json["status"])")
+                            print("JSON error: \(json["error_message"])")
+                            print("Summary: \(json["routes"][0]["summary"])")
+                            //print("Overview_polyline: \(json["routes"][0]["overview_polyline"]["points"])")
+                            points = json["routes"][0]["overview_polyline"]["points"].stringValue
                             
-                            marker.map = self.mapView
-                            print("Marker place: \(marker.title!), \(marker.position)")
+                            
+                            let path = GMSMutablePath(fromEncodedPath: points)
+                            let route = GMSPolyline(path: path)
+                            route.strokeWidth = 3.0
+                            route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.3)
+                            route.map = self.mapView
+                            
+                            let bounds = GMSCoordinateBounds.init(path: path!)
+                            let position = self.mapView.camera(for: bounds, insets: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50) )!
+                            self.mapView.animate(to: position)
+                        } else {
+                            self.navigationItem.title = "No Available Route"
                         }
-                        
-                        let bounds = GMSCoordinateBounds.init(path: path!)
-                        let position = self.mapView.camera(for: bounds, insets: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50) )!
-                        self.mapView.animate(to: position)
                         
                     }
                     
@@ -132,6 +121,15 @@ class MapViewController: UIViewController {
                     print("Error: \(error.localizedDescription)")
                 }
             }
+        }
+        
+        for place in self.destinations {
+            let marker = GMSMarker(position: place.coord)
+            marker.title = place.name
+            marker.snippet = place.address
+            
+            marker.map = self.mapView
+            print("Marker place: \(marker.title!), \(marker.position)")
         }
         
         // Add the map to the view, hide it until we've got a location update.
@@ -147,23 +145,21 @@ class MapViewController: UIViewController {
         mapView.clear()
         
         if selectedPlace != nil {
-            let marker = GMSMarker(position: (self.selectedPlace?.coordinate)!)
+            let marker = GMSMarker(position: (selectedPlace?.coord)!)
             marker.title = selectedPlace?.name
-            marker.snippet = selectedPlace?.formattedAddress
+            marker.snippet = selectedPlace?.address
             marker.map = mapView
         }
         
-        //listLikelyPlaces()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let identifier = segue.identifier {
             if identifier == "toPlacesList" {
-                //if let nextViewController = segue.destination as? PlaceViewController {
-                //listLikelyPlaces()
-                //nextViewController.likelyPlaces = likelyPlaces
-                //print("LikelyPlaces has been passed: \(likelyPlaces)")
-                //}
+                if let nextViewController = segue.destination as? PlaceViewController {
+                    nextViewController.lat = currentLocation?.coordinate.latitude
+                    nextViewController.long = currentLocation?.coordinate.longitude
+                }
             }
         }
     }
@@ -190,7 +186,6 @@ extension MapViewController: CLLocationManagerDelegate {
         updated = true
         //print("Count is \(count)")
         //count += 1
-        //listLikelyPlaces()
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
