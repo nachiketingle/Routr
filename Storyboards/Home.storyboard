@@ -25,7 +25,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="ceO-qq-1vs">
                                 <rect key="frame" x="16" y="64" width="343" height="573"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select A Destination Below" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VYC-2s-J85">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add And Select A Destination Below" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VYC-2s-J85">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="50"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="50" id="dyX-8M-C3T"/>
@@ -208,8 +208,8 @@
                                             <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hopefully Prediction Address" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CmK-fZ-qg4">
-                                            <rect key="frame" x="99.5" y="51.5" width="176.5" height="17.5"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Prediction Address" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CmK-fZ-qg4">
+                                            <rect key="frame" x="130.5" y="51.5" width="115" height="17.5"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                             <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
@@ -276,9 +276,7 @@
                             <constraint firstAttribute="trailing" secondItem="tmV-kW-i1S" secondAttribute="trailing" id="dkw-R5-MpT"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="xpx-fZ-06n">
-                        <barButtonItem key="leftBarButtonItem" enabled="NO" title=" " id="ivQ-hb-I3S"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="xpx-fZ-06n"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cag-vg-7MQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -378,7 +376,7 @@
                 <exit id="jzi-g4-0PX" userLabel="Exit" sceneMemberID="exit"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZFr-ac-NJy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2474" y="142"/>
+            <point key="canvasLocation" x="2481" y="136"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="pdv-AE-c1j">

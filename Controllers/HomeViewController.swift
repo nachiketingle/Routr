@@ -202,6 +202,10 @@ extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             print("Selection at: \(indexPath.row)")
+            if finalDestination?.placeID == destinations[indexPath.row].placeID {
+                finalDestination = nil
+                finalDestinationLabel.text = "Add And Select A Destination Below"
+            }
             destinations.remove(at: indexPath.row)
             self.tableView.reloadData()
             //destinationCells.remove(at: indexPath.row)

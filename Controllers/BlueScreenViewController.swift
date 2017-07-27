@@ -12,6 +12,7 @@ import UIKit
 class BlueScreenViewController: UIViewController {
 
     override func viewDidLoad() {
+        navigationItem.hidesBackButton = true
         super.viewDidLoad()
         
     }

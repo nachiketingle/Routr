@@ -35,7 +35,16 @@ class Location {
         self.placeID = json["place_id"].stringValue
         self.imageURL = URL(string: json["photos"][0]["html_attributions"][0].stringValue)
         print("The ref is \(json["photos"][0]["photo_reference"])")
-        imageView.af_setImage(withURL: URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8")! )
+        
+    }
+    
+    convenience init(json: JSON, setImage: Bool, tableView: UITableView) {
+        self.init(json: json)
+        if setImage {
+            imageView.af_setImage(withURL: URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8")! )
+            tableView.reloadData()
+        }
+        
     }
     
     init(place: GMSPlace) {

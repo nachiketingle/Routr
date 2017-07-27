@@ -12,7 +12,6 @@ import GoogleMaps
 import GooglePlaces
 import SwiftyJSON
 import Alamofire
-import AlamofireImage
 import AlamofireNetworkActivityIndicator
 
 class PlaceViewController: UIViewController {
@@ -32,7 +31,7 @@ class PlaceViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
-        
+        print("Started to load PlaceViewController")
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
@@ -105,10 +104,17 @@ class PlaceViewController: UIViewController {
             case .success:
                 if let value = response.result.value {
                     let json = JSON(json: value)
+                    let max: Int!
+                    if json["results"].count >= 10 {
+                        max = 10
+                    } else {
+                        max = json["results.count"].count - 1
+                    }
+                    
                     print("Got json: \(json["status"])")
-                    for count in 0...json["results"].count-1 {
+                    for count in 0...max {
                         print("Count number \(count)")
-                        self.placesList.append( Location(json: json["results"][count]) )
+                        self.placesList.append( Location(json: json["results"][count], setImage: true, tableView: self.tableView) )
                         print("Appended: \(json["results"][count]["name"].stringValue)")
                     }
                     self.tableView.reloadData()
