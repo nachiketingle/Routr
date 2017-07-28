@@ -117,9 +117,12 @@ class HomeViewController: UIViewController {
         print("Starting to segue 1.0")
         if let identifier = segue.identifier {
             if identifier == "toMapView" {
-                if let nextViewController = segue.destination as? MapViewController {
-                    nextViewController.destinations = destinations
-                    nextViewController.endPoint = finalDestination
+                if let nextViewController = segue.destination as? UINavigationController {
+                    if let controller = nextViewController.topViewController as? MapViewController {
+                        print("Starting to prepare mapViewController")
+                        controller.destinations = destinations
+                        controller.endPoint = finalDestination
+                    }
                 }
             } 
         }

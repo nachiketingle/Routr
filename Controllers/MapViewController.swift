@@ -27,7 +27,7 @@ class MapViewController: UIViewController {
     var selectMarkerLocation: CLLocationCoordinate2D?
     
     var count: Int = 0
-    var destinations: [Location]!
+    var destinations: [Location] = []
     var encodedPoints: String?
     var endPoint: Location!
     var updated = false
