@@ -13,6 +13,7 @@ import GooglePlaces
 import Alamofire
 import AlamofireNetworkActivityIndicator
 import SwiftyJSON
+import Presentr
 
 class HomeViewController: UIViewController {
     @IBOutlet weak var finalDestinationLabel: UILabel!
@@ -30,6 +31,11 @@ class HomeViewController: UIViewController {
     var count = 0
     let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
     
+    //Presenter variables
+    let presenter = Presentr(presentationType: .popup)
+    let alertController = Presentr.alertViewController()
+    let controller = TestViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -45,17 +51,25 @@ class HomeViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     @IBAction func testButtonPressed(_ sender: UIButton) {
-        if notCoolTexts.arrayCounter >= notCoolTexts.notCoolArray.count-1 {
-            notCoolTexts.arrayCounter = 0
-            performSegue(withIdentifier: "toBlueScreen", sender: self)
-        }
-        notCoolLabel.text = notCoolTexts.notCoolArray[notCoolTexts.arrayCounter]
-        notCoolTexts.arrayCounter += 1
-        if notCoolLabel.text == notCoolTexts.disablePhrase {
-            mapButton.isEnabled = false
-            autocompleteButton.isEnabled = false
-        }
-        count += 1
+        
+        presenter.blurBackground = true
+        presenter.blurStyle = UIBlurEffectStyle.light
+        presenter.presentationType = .popup
+        presenter.viewControllerForContext = self
+        customPresentViewController(presenter, viewController: controller, animated: true, completion: nil)
+        /*
+         if notCoolTexts.arrayCounter >= notCoolTexts.notCoolArray.count-1 {
+         notCoolTexts.arrayCounter = 0
+         performSegue(withIdentifier: "toBlueScreen", sender: self)
+         }
+         notCoolLabel.text = notCoolTexts.notCoolArray[notCoolTexts.arrayCounter]
+         notCoolTexts.arrayCounter += 1
+         if notCoolLabel.text == notCoolTexts.disablePhrase {
+         mapButton.isEnabled = false
+         autocompleteButton.isEnabled = false
+         }
+         count += 1
+         */
     }
     
     @IBAction func mapButtonPressed(_ sender: Any) {
@@ -63,7 +77,7 @@ class HomeViewController: UIViewController {
         
     }
     @IBAction func searchButtonPressed(_ sender: Any) {
-            print("Button pressed")
+        print("Button pressed")
     }
     
     @IBAction func autocompleteButtonPressed(_ sender: UIButton) {
@@ -105,7 +119,7 @@ class HomeViewController: UIViewController {
             }
             selectedPlace = nil
         }
-
+        
         
         tableView.reloadData()
         // for now, simply defining the method is sufficient.
@@ -124,12 +138,12 @@ class HomeViewController: UIViewController {
                         controller.endPoint = finalDestination
                     }
                 }
-            } 
+            }
         }
         print("End of segue 1.0")
     }
     
-
+    
     
 }
 
@@ -144,10 +158,10 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         let location = Location(place: place)
         destinations.append(location)
         /*
-        let cell = tableView.dequeueReusableCell(withIdentifier: "listDestinationsTableViewCell") as! ListDestinationsTableViewCell
-        cell.setLocation(to: location)
-        destinationCells.append(cell)
-        print(destinationCells)
+         let cell = tableView.dequeueReusableCell(withIdentifier: "listDestinationsTableViewCell") as! ListDestinationsTableViewCell
+         cell.setLocation(to: location)
+         destinationCells.append(cell)
+         print(destinationCells)
          */
         notCoolLabel.text = "Marker shall be placed on map"
         notCoolTexts.arrayCounter = 0

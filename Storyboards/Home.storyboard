@@ -70,7 +70,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="37" translatesAutoresizingMaskIntoConstraints="NO" id="yJB-mp-SBR">
-                                        <rect key="frame" x="19.5" y="543" width="304" height="30"/>
+                                        <rect key="frame" x="13" y="543" width="317" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VQk-ZI-sgx">
                                                 <rect key="frame" x="0.0" y="0.0" width="70" height="30"/>
@@ -97,9 +97,9 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Co-1O-8bN">
-                                                <rect key="frame" x="225" y="0.0" width="79" height="30"/>
+                                                <rect key="frame" x="225" y="0.0" width="92" height="30"/>
                                                 <color key="backgroundColor" red="0.51340925690000005" green="0.95495611430000005" blue="0.49807274340000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <state key="normal" title="Don't Press"/>
+                                                <state key="normal" title="Presentr Test"/>
                                                 <connections>
                                                     <action selector="testButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="mmb-XO-NZt"/>
                                                 </connections>
@@ -139,6 +139,42 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Za8-tD-wPC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1020" y="141.67916041979012"/>
+        </scene>
+        <!--Test View Controller-->
+        <scene sceneID="m7C-WT-eOS">
+            <objects>
+                <viewController id="vGJ-ER-mjS" customClass="TestViewController" customModule="GoogleMapsAPITest" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="jbI-za-Kab"/>
+                        <viewControllerLayoutGuide type="bottom" id="KIU-s3-sQo"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="NbQ-vv-mWu">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YV6-33-GQN">
+                                <rect key="frame" x="112" y="293.5" width="150" height="80"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="150" id="0a5-wD-Y6u"/>
+                                    <constraint firstAttribute="height" constant="80" id="1AY-ER-8WU"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <state key="normal" title="THIS WORKS!!!"/>
+                                <connections>
+                                    <action selector="workButton:" destination="vGJ-ER-mjS" eventType="touchUpInside" id="TZm-X7-gz6"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.51340925690000005" green="0.95495611430000005" blue="0.49807274340000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="YV6-33-GQN" firstAttribute="centerY" secondItem="NbQ-vv-mWu" secondAttribute="centerY" id="bYo-t4-wNe"/>
+                            <constraint firstItem="YV6-33-GQN" firstAttribute="centerX" secondItem="NbQ-vv-mWu" secondAttribute="centerX" id="x8K-LL-9vX"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pDK-gc-FnP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="217" y="868"/>
         </scene>
         <!--Predictions Table View Controller-->
         <scene sceneID="9Nx-hQ-Tv4">
@@ -244,7 +280,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="0DT-sl-qxT" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="hcw-NX-b3K">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="hcw-NX-b3K">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

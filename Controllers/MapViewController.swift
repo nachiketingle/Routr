@@ -104,18 +104,40 @@ class MapViewController: UIViewController {
                             
                             //receive points from json response
                             self.encodedPoints = json["routes"][0]["overview_polyline"]["points"].stringValue
-                            print("Encoded points made")
-                            //create a path from the encoded points
-                            let path = GMSMutablePath(fromEncodedPath: self.encodedPoints!)
-                            print("Path made")
-                            let route = GMSPolyline(path: path)
-                            print("Route made")
-                            route.strokeWidth = 3.0
-                            route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.3)
-                            route.map = self.mapView
+                            var legs = json["routes"][0]["legs"], legCount = legs.arrayValue.count
+                            var steps: JSON, stepCount: Int, polylines: [String] = []
+                            for count in 0...legCount-1 {
+                                
+                                steps = legs[count]["steps"]
+                                stepCount =  json["routes"][0]["legs"][count]["steps"].arrayValue.count
+                                
+                                for counter in 0...stepCount-1 {
+                                    
+                                    polylines.append(steps[counter]["polyline"]["points"].stringValue)
+                                    
+                                }
+                            }
+                            var route: GMSPolyline, path: GMSMutablePath
+                            
+                            for point in polylines {
+                                print("Encoded points made")
+                                //create a path from the encoded points
+                                path = GMSMutablePath(fromEncodedPath: point)!
+                                print("Path made")
+                                route = GMSPolyline(path: path)
+                                print("Route made")
+                                route.strokeWidth = 3.0
+                                route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.3)
+                                route.map = self.mapView
+                            }
+                            
+                            //self.navigationItem.title = "Points: \(stepCount)"
+                            
+                            
                             print("Added route to mapView")
                             //create bounds to readjust mapView
-                            let bounds = GMSCoordinateBounds.init(path: path!)
+                            path = GMSMutablePath(fromEncodedPath: self.encodedPoints!)!
+                            let bounds = GMSCoordinateBounds.init(path: path)
                             let position = self.mapView.camera(for: bounds, insets: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50) )!
                             self.mapView.animate(to: position)
                         } else {
@@ -149,7 +171,7 @@ class MapViewController: UIViewController {
     
     @IBAction func unwindToMapViewController(_ segue: UIStoryboardSegue) {
         
-        mapView.clear()
+        //mapView.clear()
         
         if selectedPlace != nil {
             let marker = GMSMarker(position: (selectedPlace?.coord)!)
@@ -158,23 +180,25 @@ class MapViewController: UIViewController {
             marker.map = mapView
         }
         
-        if !destinations.isEmpty {
-            if let points = encodedPoints {
-                let path = GMSMutablePath(fromEncodedPath: points)
-                let route = GMSPolyline(path: path)
-                route.strokeWidth = 3.0
-                route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.3)
-                route.map = self.mapView
-            }
-            for place in destinations {
-                let marker = GMSMarker(position: place.coord)
-                marker.title = place.name
-                marker.snippet = place.address
-                
-                marker.map = self.mapView
-                print("Marker place: \(marker.title!)")
-            }
-        }
+        /*
+         if !destinations.isEmpty {
+         if let points = encodedPoints {
+         let path = GMSMutablePath(fromEncodedPath: points)
+         let route = GMSPolyline(path: path)
+         route.strokeWidth = 3.0
+         route.strokeColor = .init(red: 0, green: 0, blue: 1, alpha: 0.3)
+         route.map = self.mapView
+         }
+         for place in destinations {
+         let marker = GMSMarker(position: place.coord)
+         marker.title = place.name
+         marker.snippet = place.address
+         
+         marker.map = self.mapView
+         print("Marker place: \(marker.title!)")
+         }
+         }
+         */
         
     }
     
@@ -250,14 +274,14 @@ extension MapViewController: GMSMapViewDelegate {
         selectMarkerLocation = marker.position
         print("Have set marker location")
         /*
-        controller.lat = selectMarkerLocation?.latitude
-        controller.long = selectMarkerLocation?.longitude
-        presenter.blurBackground = true
-        presenter.roundCorners = true
-        presenter.dismissOnTap = true
-        presenter.dismissOnSwipe = false
-        customPresentViewController(presenter, viewController: controller, animated: true, completion: nil)
- */
+         controller.lat = selectMarkerLocation?.latitude
+         controller.long = selectMarkerLocation?.longitude
+         presenter.blurBackground = true
+         presenter.roundCorners = true
+         presenter.dismissOnTap = true
+         presenter.dismissOnSwipe = false
+         customPresentViewController(presenter, viewController: controller, animated: true, completion: nil)
+         */
         performSegue(withIdentifier: "toPlacesList", sender: self)
         return true
     }

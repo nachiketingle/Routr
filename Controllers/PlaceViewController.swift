@@ -96,7 +96,7 @@ class PlaceViewController: UIViewController {
          })
          */
 
-        let url = URL(string: "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(lat!),\(long!)&radius=50000&key=\(APIKeyDir)")
+        let url = URL(string: "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(lat!),\(long!)&radius=30000&keyword=attraction&key=\(APIKeyDir)")
         print("Latitude: \(lat!), Longitude: \(long!)")
         Alamofire.request(url!).validate().responseJSON() { (response) in
             switch response.result {

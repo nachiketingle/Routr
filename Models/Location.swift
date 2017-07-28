@@ -10,6 +10,9 @@ import Foundation
 import UIKit
 import GooglePlaces
 import SwiftyJSON
+import Alamofire
+import AlamofireImage
+import AlamofireNetworkActivityIndicator
 
 class Location {
     
@@ -41,8 +44,22 @@ class Location {
     convenience init(json: JSON, setImage: Bool, tableView: UITableView) {
         self.init(json: json)
         if setImage {
-            imageView.af_setImage(withURL: URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8")! )
-            tableView.reloadData()
+            let url = URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8")
+            Alamofire.request(url!).validate().responseImage(completionHandler: { (response) in
+                switch response.result {
+                case .success:
+                    if let value = response.result.value {
+                        self.imageView.image = value
+                        tableView.reloadData()
+                    }
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                }
+                
+            })
+            
+            //imageView.af_setImage(withURL: URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8")! )
+            
         }
         
     }
@@ -59,34 +76,34 @@ class Location {
         print("Normal params set")
         
         /*
-        let coordinates = "\(lat),\(long)"
-        self.imageURL = URL(string: "https://maps.googleapis.com/maps/api/streetview/metadata?size=300x200&location=\(coordinates)&key=\(APIKey)")
-        
-        Alamofire.request(imageURL).validate().responseJSON { (response) in
-            switch response.result {
-                
-            case .success:
-                
-                if let value = response.result.value {
-                    let json = JSON(value)
-                    
-                    print("Success: \(place.name), Status: \(json["status"])")
-                    if json["status"] == "OK"{
-                        self.imageURL = URL(string: "https://maps.googleapis.com/maps/api/streetview/metadata?size=300x200&location=\(coordinates)&key=\(self.APIKey)")
-                    } else {
-                        let locationName = place.name.replacingOccurrences(of: " ", with: "+").lowercased()
-                        self.imageURL = URL(string: "https://maps.googleapis.com/maps/api/streetview?size=300x200&location=\(locationName)&key=\(self.APIKey)")
-                    }
-                    
-                    self.imageView.af_setImage(withURL: self.imageURL)
-                    
-                }
-            case .failure(let error):
-                print("Error: \(error.localizedDescription)")
-            }
-        }
-        */
+         let coordinates = "\(lat),\(long)"
+         self.imageURL = URL(string: "https://maps.googleapis.com/maps/api/streetview/metadata?size=300x200&location=\(coordinates)&key=\(APIKey)")
+         
+         Alamofire.request(imageURL).validate().responseJSON { (response) in
+         switch response.result {
+         
+         case .success:
+         
+         if let value = response.result.value {
+         let json = JSON(value)
+         
+         print("Success: \(place.name), Status: \(json["status"])")
+         if json["status"] == "OK"{
+         self.imageURL = URL(string: "https://maps.googleapis.com/maps/api/streetview/metadata?size=300x200&location=\(coordinates)&key=\(self.APIKey)")
+         } else {
+         let locationName = place.name.replacingOccurrences(of: " ", with: "+").lowercased()
+         self.imageURL = URL(string: "https://maps.googleapis.com/maps/api/streetview?size=300x200&location=\(locationName)&key=\(self.APIKey)")
+         }
+         
+         self.imageView.af_setImage(withURL: self.imageURL)
+         
+         }
+         case .failure(let error):
+         print("Error: \(error.localizedDescription)")
+         }
+         }
+         */
     }
     
 }
-    
+
