@@ -16,8 +16,6 @@ import AlamofireNetworkActivityIndicator
 
 class PlaceViewController: UIViewController {
     
-    //var likelyPlaces: [GMSPlace] = []
-    var likelyPlaces: [Location] = []
     //var selectedPlace: GMSPlace?
     var selectedPlace: Location?
     var placesList: [Location] = []
@@ -27,6 +25,7 @@ class PlaceViewController: UIViewController {
     var count = 0
     var lat: CLLocationDegrees!
     var long: CLLocationDegrees!
+    var placeID: String?
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -35,11 +34,15 @@ class PlaceViewController: UIViewController {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
+        if placeID == nil {
+            navigationItem.rightBarButtonItem?.isEnabled = false
+            navigationItem.rightBarButtonItem?.tintColor = UIColor.clear
+        } else {
+            navigationItem.rightBarButtonItem?.isEnabled = true
+            navigationItem.rightBarButtonItem?.tintColor = nil
+        }
         
-        //for place in likelyPlaces {
-        //    placesList.append(Location(place: place))
-        //}
-        listLikelyPlaces()
+        listNearbyPlaces()
         
         tableView.reloadData()
         super.viewDidLoad()
@@ -54,47 +57,20 @@ class PlaceViewController: UIViewController {
                 }
             } else if identifier == "cancel" {
                 print("Cancel button is presesed")
+            } else if identifier == "removeMarker" {
+                //remove marker function
+                if let nextViewController = segue.destination as? MapViewController {
+                    nextViewController.removeMarker = placeID
+                    placeID = nil
+                }
             }
         }
     }
     
-    func listLikelyPlaces() {
-        likelyPlaces.removeAll()
+    func listNearbyPlaces() {
+
         placesList.removeAll()
         
-        /*
-         placesClient.currentPlace (callback:{ (placeLikelihoods, error) -> Void in
-         if let error = error {
-         print("Current place error: \(error.localizedDescription)")
-         return
-         }
-         
-         if let likelihoodList = placeLikelihoods {
-         //print("Starting to add places")
-         self.count = 0
-         for likelihood in likelihoodList.likelihoods {
-         let place = likelihood.place
-         //print("This place was added: \(place.name)")
-         self.likelyPlaces.append(place)
-         self.placesList.append( Location(place: place) )
-         self.count += 1
-         }
-         //set number of places to just 10
-         if self.likelyPlaces.count > 10 {
-         let range: ClosedRange<Int> = ClosedRange(uncheckedBounds: (lower: 10, upper: self.likelyPlaces.count - 1))
-         self.likelyPlaces.removeSubrange(range)
-         }
-         if self.placesList.count > 10 {
-         let range: ClosedRange<Int> = ClosedRange(uncheckedBounds: (lower: 10, upper: self.placesList.count - 1))
-         self.placesList.removeSubrange(range)
-         }
-         
-         self.tableView.reloadData()
-         print("Finished adding places: \(self.count)")
-         }
-         
-         })
-         */
 
         let url = URL(string: "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(lat!),\(long!)&radius=30000&keyword=attraction&key=\(APIKeyDir)")
         print("Latitude: \(lat!), Longitude: \(long!)")
@@ -111,9 +87,8 @@ class PlaceViewController: UIViewController {
                         max = json["results.count"].count - 1
                     }
                     
-                    print("Got json: \(json["status"])")
+                    print("JSON status for placeVC: \(json["status"])")
                     for count in 0...max {
-                        print("Count number \(count)")
                         self.placesList.append( Location(json: json["results"][count], setImage: true, tableView: self.tableView) )
                         print("Appended: \(json["results"][count]["name"].stringValue)")
                     }
@@ -126,6 +101,9 @@ class PlaceViewController: UIViewController {
             
             
         }
+    }
+    @IBAction func removePlacePressed(_ sender: UIBarButtonItem) {
+        performSegue(withIdentifier: "removeMarker", sender: self)
     }
     
 }
@@ -146,8 +124,6 @@ extension PlaceViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //print("Returning number of rows: \(likelyPlaces.count)")
-        
         return placesList.count
     }
     

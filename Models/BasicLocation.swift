@@ -12,7 +12,7 @@ import SwiftyJSON
 struct BasicLocation {
     
     let name: String
-    let secondaryText: String
+    var secondaryText: String
     let placeID: String
     
     init(json: JSON) {

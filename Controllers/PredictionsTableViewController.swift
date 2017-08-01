@@ -14,15 +14,11 @@ import SwiftyJSON
 
 class PredictionsTableViewController: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate {
     
-    var unfilteredPlaces: [String] = ["San Jose", "San Francisco", "Hacker Dojo", "California", "Subway", "Taco Bell",
-                                      "Pho Van"]
-    var filteredPlaces: [String]?
-    
     var predictedPlaces: [BasicLocation] = []
+    var selectedPlace: String?
     
     let searchController = UISearchController(searchResultsController: nil)
     let APIKey = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
-    var selectedPlace: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,6 +58,9 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
         let cell = tableView.dequeueReusableCell(withIdentifier: "predictionCell", for: indexPath) as! ListPredictionsTableViewCell
         //if let places = predictedPlaces {
         cell.predictionLabel.text = predictedPlaces[indexPath.row].name
+        if !predictedPlaces[indexPath.row].secondaryText.contains(",") {
+            predictedPlaces[indexPath.row].secondaryText = "Not A Selectable Location"
+        } 
         cell.secondaryLabel.text = predictedPlaces[indexPath.row].secondaryText
         //}
         return cell
@@ -72,8 +71,10 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedPlace = predictedPlaces[indexPath.row].placeID
-        performSegue(withIdentifier: "unwindToHome", sender: self)
+        if predictedPlaces[indexPath.row].secondaryText != "Not A Selectable Location" {
+            selectedPlace = predictedPlaces[indexPath.row].placeID
+            performSegue(withIdentifier: "unwindToHome", sender: self)
+        }
     }
     
     func updateSearchResults(for searchController: UISearchController) {

@@ -24,8 +24,8 @@ class ListPlacesTableViewCell: UITableViewCell {
     
     func setLocation(to place: Location) {
         placeTextLabel.text = place.name
-        print("AND HIS NAME IS: \(place.name)")
-        attributionTextLabel.text = place.attributedText
+        print("AND HIS NAME IS: \(place.name) at \(place.address)")
+        attributionTextLabel.text = place.address //place.attributedText
         placeImageView.image = place.imageView.image
         if let url = place.imageURL {
             print(url.absoluteString)

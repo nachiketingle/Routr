@@ -51,25 +51,32 @@ class HomeViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     @IBAction func testButtonPressed(_ sender: UIButton) {
-        
-        presenter.blurBackground = true
-        presenter.blurStyle = UIBlurEffectStyle.light
-        presenter.presentationType = .popup
-        presenter.viewControllerForContext = self
-        customPresentViewController(presenter, viewController: controller, animated: true, completion: nil)
         /*
-         if notCoolTexts.arrayCounter >= notCoolTexts.notCoolArray.count-1 {
-         notCoolTexts.arrayCounter = 0
-         performSegue(withIdentifier: "toBlueScreen", sender: self)
-         }
-         notCoolLabel.text = notCoolTexts.notCoolArray[notCoolTexts.arrayCounter]
-         notCoolTexts.arrayCounter += 1
-         if notCoolLabel.text == notCoolTexts.disablePhrase {
-         mapButton.isEnabled = false
-         autocompleteButton.isEnabled = false
-         }
-         count += 1
+         presenter.blurBackground = true
+         presenter.blurStyle = UIBlurEffectStyle.light
+         presenter.presentationType = .popup
+         presenter.viewControllerForContext = self
+         customPresentViewController(presenter, viewController: controller, animated: true, completion: nil)
          */
+        performSegue(withIdentifier: "Test", sender: self)
+        
+        //popover?.sourceView = view
+        //popover?.sourceRect = CGRect(x: view.bounds.maxX - 50, y: view.bounds.maxY - 50, width: view.bounds.width - 20, height: view.bounds.height - 20)
+       
+        
+        return
+        if notCoolTexts.arrayCounter >= notCoolTexts.notCoolArray.count-1 {
+            notCoolTexts.arrayCounter = 0
+            performSegue(withIdentifier: "toBlueScreen", sender: self)
+        }
+        notCoolLabel.text = notCoolTexts.notCoolArray[notCoolTexts.arrayCounter]
+        notCoolTexts.arrayCounter += 1
+        if notCoolLabel.text == notCoolTexts.disablePhrase {
+            mapButton.isEnabled = false
+            autocompleteButton.isEnabled = false
+        }
+        count += 1
+        
     }
     
     @IBAction func mapButtonPressed(_ sender: Any) {
@@ -138,7 +145,7 @@ class HomeViewController: UIViewController {
                         controller.endPoint = finalDestination
                     }
                 }
-            }
+            } 
         }
         print("End of segue 1.0")
     }
@@ -206,7 +213,7 @@ extension HomeViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "listDestinationsTableViewCell", for: indexPath) as! ListDestinationsTableViewCell
         let place = destinations[indexPath.row]
         cell.destinationTextLabel.text = place.name
-        
+        cell.addressTextLabel.text = place.address
         //print("Returning cell: \(place.name)")
         return cell
     }

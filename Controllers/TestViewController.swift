@@ -10,10 +10,17 @@ import UIKit
 
 class TestViewController: UIViewController {
 
-
+    
     override func viewDidLoad() {
+        
         super.viewDidLoad()
-
+        
+        modalPresentationStyle = .overCurrentContext
+        //view.bounds = CGRect(x: 50, y: 50, width: 50, height: 50)
+        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.5)
+        view.isOpaque = false
+        
+        //presentationController?.presentedViewController = self
         // Do any additional setup after loading the view.
     }
 
@@ -22,11 +29,17 @@ class TestViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    
     @IBAction func workButton(_ sender: UIButton) {
-        
-        self.dismiss(animated: true, completion: nil)
+        view.backgroundColor = UIColor.red.withAlphaComponent(0.5)
+        //self.dismiss(animated: true, completion: nil)
     }
-
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.dismiss(animated: true, completion: nil)
+        
+    }
+    
     /*
     // MARK: - Navigation
 
