@@ -231,6 +231,7 @@ extension HomeViewController: UITableViewDataSource {
                 finalDestinationLabel.text = "Add And Select A Destination Below"
             }
             destinations.remove(at: indexPath.row)
+            
             self.tableView.reloadData()
             //destinationCells.remove(at: indexPath.row)
         }

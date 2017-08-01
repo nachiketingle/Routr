@@ -26,11 +26,17 @@ class PlaceViewController: UIViewController {
     var lat: CLLocationDegrees!
     var long: CLLocationDegrees!
     var placeID: String?
-    
+    @IBOutlet weak var popupView: UIView!
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         print("Started to load PlaceViewController")
+        
+        view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.5)
+        view.isOpaque = false
+        
+        popupView.layer.cornerRadius = 10
+        
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
@@ -102,9 +108,20 @@ class PlaceViewController: UIViewController {
             
         }
     }
+    
+    @IBAction func closePressed(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func removePressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "removeMarker", sender: self)
+    }
+    
+    /*
     @IBAction func removePlacePressed(_ sender: UIBarButtonItem) {
         performSegue(withIdentifier: "removeMarker", sender: self)
     }
+ */
     
 }
 
