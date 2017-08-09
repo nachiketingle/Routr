@@ -20,10 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         //APIkey: AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA
         //GoogleMaps services
-        GMSServices.provideAPIKey("AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA")
+        GMSServices.provideAPIKey(Constants.APIKey.IOS)
         
         //GooglePlaces services
-        GMSPlacesClient.provideAPIKey("AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA")
+        GMSPlacesClient.provideAPIKey(Constants.APIKey.IOS)
         
         let storyboard = UIStoryboard(name: "Home", bundle: .main)
         

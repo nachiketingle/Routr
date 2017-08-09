@@ -33,8 +33,6 @@ class MapViewController: UIViewController {
     var endPoint: Location!
     var updated = false
     
-    let APIKey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
-    let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
     let controller = PlaceViewController()
     let presenter = Presentr(presentationType: .popup)
     
@@ -44,6 +42,10 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         
         print("Started to load MapViewController")
+        
+        navigationController?.navigationBar.barTintColor = Constants.Colors.purple
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         
         //set up location manager
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -59,7 +61,8 @@ class MapViewController: UIViewController {
         let camera = GMSCameraPosition.camera(withLatitude: lat!,
                                               longitude: long!,
                                               zoom: zoomLevel)
-        
+        view.backgroundColor = Constants.Colors.purple
+        //mapView.backgroundColor = Constants.Colors.purple.withAlphaComponent(0.7)
         directionsCall()
         
         //set up map view
@@ -111,7 +114,7 @@ class MapViewController: UIViewController {
                     marker.title = selectedPlace?.name
                     marker.snippet = selectedPlace?.address
                     marker.map = mapView
-                    selectedPlace = nil
+                    //selectedPlace = nil
                     let camera = GMSCameraPosition.camera(withLatitude: place.lat,
                                                           longitude: place.long,
                                                           zoom: zoomLevel)
@@ -145,28 +148,28 @@ class MapViewController: UIViewController {
                 if let nextViewController = segue.destination as? HomeViewController {
                     nextViewController.destinations = self.destinations
                 }
+            } else if identifier == "toCollectionPlaceList" {
+                if let nextViewController = segue.destination as? PopupCollectionViewController {
+                    print("Preparing to segue")
+                    if let location = selectMarkerLocation {
+                        nextViewController.lat = location.latitude
+                        nextViewController.long = location.longitude
+                        nextViewController.placeID = removeMarker!
+                        selectMarkerLocation = nil
+                    } else {
+                        nextViewController.lat = currentLocation?.coordinate.latitude
+                        nextViewController.long = currentLocation?.coordinate.longitude
+                        nextViewController.placeID = nil
+                    }
+                    
+                    print("Finished preperations")
+                }
             }
         }
     }
     
     func setOverlays(){
         //add markers for every location added
-        mapView.clear()
-        print("Cleared the map")
-        for place in self.destinations {
-            let marker = GMSMarker(position: place.coord)
-            marker.title = place.name
-            marker.snippet = place.placeID
-            marker.appearAnimation = .pop
-            if endPoint.placeID == place.placeID {
-                marker.icon = GMSMarker.markerImage(with: .green)
-            } else {
-                marker.icon = GMSMarker.markerImage(with: .blue)
-            }
-            
-            marker.map = self.mapView
-            print("Marker place: \(marker.title!)")
-        }
         
         //set path
         var route: GMSPolyline, path: GMSMutablePath
@@ -189,6 +192,26 @@ class MapViewController: UIViewController {
         let bounds = GMSCoordinateBounds.init(path: path)
         let position = self.mapView.camera(for: bounds, insets: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50) )!
         self.mapView.animate(to: position)
+    }
+    
+    func setMarkers() {
+        mapView.clear()
+        print("Cleared the map")
+        for place in self.destinations {
+            let marker = GMSMarker(position: place.coord)
+            marker.title = place.name
+            marker.snippet = place.placeID
+            marker.appearAnimation = .pop
+            if endPoint.placeID == place.placeID {
+                marker.icon = GMSMarker.markerImage(with: .green)
+            } else {
+                marker.icon = GMSMarker.markerImage(with: .blue)
+            }
+            
+            marker.map = self.mapView
+            print("Marker place: \(marker.title!)")
+        }
+        
     }
     
     func directionsCall() {
@@ -218,10 +241,10 @@ class MapViewController: UIViewController {
                 }
                 params["waypoints"] = waypoints
             }
-            params["key"] = APIKeyDir
+            params["key"] = Constants.APIKey.web
             
             
-            Alamofire.request("https://maps.googleapis.com/maps/api/directions/json", method: .get, parameters: params, encoding: URLEncoding.default, headers: nil) .validate().responseJSON() { (response) in
+            Alamofire.request("https://maps.googleapis.com/maps/api/directions/json", method: .get, parameters: params, encoding: URLEncoding.default, headers: nil).validate().responseJSON() { (response) in
                 
                 //print("URL works")
                 
@@ -254,10 +277,12 @@ class MapViewController: UIViewController {
                             
                             //setting encoded points for polyline
                             self.encodedPoints = json["routes"][0]["overview_polyline"]["points"].stringValue
+                            self.setMarkers()
                             self.setOverlays()
                             
                         } else {
-                            self.navigationItem.title = "No Available Route"
+                            self.setMarkers()
+                            self.navigationItem.prompt = "No Available Route"
                         }
                     }
                     
@@ -282,10 +307,13 @@ extension MapViewController: GMSMapViewDelegate {
                 selectMarkerLocation = marker.position
                 removeMarker = marker.snippet
                 print("Have set marker location")
-                performSegue(withIdentifier: "toPlacesList", sender: self)
+                performSegue(withIdentifier: "toCollectionPlaceList", sender: self)
+
+                //performSegue(withIdentifier: "toPlacesList", sender: self)
                 return true
             }
         }
+        
         /*
          controller.lat = selectMarkerLocation?.latitude
          controller.long = selectMarkerLocation?.longitude
@@ -297,6 +325,22 @@ extension MapViewController: GMSMapViewDelegate {
          */
         
         return false
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTapInfoWindowOf marker: GMSMarker) {
+        let alertController = UIAlertController(title: "Would you like to add the following place to your path?", message: marker.title, preferredStyle: .alert)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alertController.addAction(cancelAction)
+        
+        let addAction = UIAlertAction(title: "Add", style: .default) { (action) in
+            //destinations.append(Location(
+            self.destinations.append(self.selectedPlace!)
+            self.directionsCall()
+        }
+        alertController.addAction(addAction)
+        
+        self.present(alertController, animated: true, completion: nil)
     }
     
 }

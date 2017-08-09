@@ -1,31 +1,25 @@
 //
-//  ListPlacesTableViewCell.swift
+//  PlaceCollectionViewCell.swift
 //  GoogleMapsAPITest
 //
-//  Created by Nachiket on 7/13/17.
+//  Created by Nachiket on 8/3/17.
 //  Copyright © 2017 Nachiket. All rights reserved.
 //
 
-import Foundation
 import UIKit
-import GoogleMaps
-import GooglePlaces
-import Alamofire
-import AlamofireImage
-import AlamofireNetworkActivityIndicator
-import SwiftyJSON
 
-class ListPlacesTableViewCell: UITableViewCell {
+class PlaceCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var placeTextLabel: UILabel!
     @IBOutlet weak var placeImageView: UIImageView!
     @IBOutlet weak var attributionTextLabel: UILabel!
     
-    
     func setLocation(to place: Location) {
         placeTextLabel.text = place.name
+        placeTextLabel.textColor = UIColor.white
         //print("AND HIS NAME IS: \(place.name) at \(place.address)")
         attributionTextLabel.text = place.address //place.attributedText
+        attributionTextLabel.textColor = UIColor.white
         placeImageView.image = place.imageView.image
     }
     

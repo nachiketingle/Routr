@@ -16,17 +16,28 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
     
     var predictedPlaces: [BasicLocation] = []
     var selectedPlace: String?
-    
+    var resultAvailable: Bool = true
     let searchController = UISearchController(searchResultsController: nil)
-    let APIKey = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
-    
+    let label = UILabel()
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.navigationBar.barTintColor = Constants.Colors.purple
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        navigationController?.title = "Search for a place"
+        navigationController?.navigationItem.title = "Search for a place"
         //filteredPlaces = unfilteredPlaces
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
-        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = true
         searchController.dimsBackgroundDuringPresentation = false
+        searchController.searchBar.barTintColor = Constants.Colors.purple
+        searchController.searchBar.tintColor = UIColor.white
+        searchController.searchBar.keyboardType = .alphabet
+        
+        tableView.backgroundColor = Constants.Colors.purple
+        tableView.separatorColor = UIColor.white
+        tableView.tableFooterView = UIView()
         tableView.tableHeaderView = searchController.searchBar
         
     }
@@ -41,6 +52,7 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
         if let identifier = segue.identifier {
             if identifier == "unwindToHome" {
                 if let nextViewController = segue.destination as? HomeViewController {
+                    self.dismiss(animated: true, completion: nil)
                     nextViewController.selectedPlace = selectedPlace!
                     print("New location has been added")
                 }
@@ -48,21 +60,35 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
         }
         print("End of segue")
     }
+    @IBAction func cancelButtonPressed(_ sender: UIBarButtonItem) {
+        self.dismiss(animated: true, completion: nil)
+    }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         //guard let places = predictedPlaces else { return 0 }
+        if !resultAvailable {
+            return 1
+        }
         return predictedPlaces.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "predictionCell", for: indexPath) as! ListPredictionsTableViewCell
-        //if let places = predictedPlaces {
-        cell.predictionLabel.text = predictedPlaces[indexPath.row].name
-        if !predictedPlaces[indexPath.row].secondaryText.contains(",") {
-            predictedPlaces[indexPath.row].secondaryText = "Not A Selectable Location"
-        } 
-        cell.secondaryLabel.text = predictedPlaces[indexPath.row].secondaryText
-        //}
+        if resultAvailable {
+            cell.predictionLabel.text = predictedPlaces[indexPath.row].name
+            if !predictedPlaces[indexPath.row].secondaryText.contains(",") {
+                predictedPlaces[indexPath.row].secondaryText = "Please select a more specific location"
+                cell.isUserInteractionEnabled = false
+            }
+            cell.isUserInteractionEnabled = true
+            cell.secondaryLabel.text = predictedPlaces[indexPath.row].secondaryText
+        } else {
+            cell.predictionLabel.text = "No results available"
+            cell.isUserInteractionEnabled = false
+            cell.secondaryLabel.text = ""
+        }
+        
+        cell.backgroundColor = Constants.Colors.purple
         return cell
     }
     
@@ -71,7 +97,7 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if predictedPlaces[indexPath.row].secondaryText != "Not A Selectable Location" {
+        if predictedPlaces[indexPath.row].secondaryText != "Please select a more specific location" {
             selectedPlace = predictedPlaces[indexPath.row].placeID
             performSegue(withIdentifier: "unwindToHome", sender: self)
         }
@@ -82,10 +108,12 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        if (searchController.searchBar.text?.isEmpty)! {
+            return
+        }
         if let searchText = searchController.searchBar.text?.replacingOccurrences(of: " ", with: "+"), !searchText.isEmpty {
             
-            
-            let url = URL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(searchText)&location=0,0&radius=20000000&key=\(APIKey)")
+            let url = URL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(searchText)&location=0,0&radius=20000000&key=\(Constants.APIKey.web)")
             Alamofire.request(url!).validate().responseJSON() { (response) in
                 switch response.result {
                     
@@ -96,10 +124,14 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
                         print("JSON Status is : \(json["status"])")
                         print("JSON Error: \(json["error_message"])")
                         self.predictedPlaces.removeAll()
-                        
-                        for count in 0...json["predictions"].count-1 {
-                            self.predictedPlaces.append(BasicLocation(json: json["predictions"][count]))
-                            print("Appended: \(self.predictedPlaces[count].name)")
+                        if json["status"].stringValue == "OK" {
+                            for count in 0...json["predictions"].count-1 {
+                                self.predictedPlaces.append(BasicLocation(json: json["predictions"][count]))
+                                print("Appended: \(self.predictedPlaces[count].name)")
+                                self.resultAvailable = true
+                            }
+                        } else {
+                            self.resultAvailable = false
                         }
                         self.tableView.reloadData()
                     }
@@ -110,7 +142,5 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
             }
             
         }
-        
-        //tableView.reloadData()
     }
 }

@@ -13,9 +13,9 @@ import GooglePlaces
 import Alamofire
 import AlamofireNetworkActivityIndicator
 import SwiftyJSON
-import Presentr
 
 class HomeViewController: UIViewController {
+
     @IBOutlet weak var finalDestinationLabel: UILabel!
     @IBOutlet weak var autocompleteButton: UIButton!
     @IBOutlet weak var mapButton: UIButton!
@@ -28,43 +28,61 @@ class HomeViewController: UIViewController {
     
     var selectedPlace: String? = nil
     var notCoolTexts = NotCoolTexts()
-    var count = 0
-    let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
-    
-    //Presenter variables
-    let presenter = Presentr(presentationType: .popup)
-    let alertController = Presentr.alertViewController()
-    let controller = TestViewController()
-    
+  
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setDesign()
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.tableFooterView = UIView()
         //tableView.separatorStyle = .none
+
         tableView.reloadData()
+    }
+    
+    func setDesign() {
+        //navigationController?.navigationBar.isOpaque = true
+        //navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.barTintColor = Constants.Colors.purple
+        navigationController?.navigationBar.tintColor = UIColor.white
+        navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
+        
+        /*
+        testButton.layer.cornerRadius = 3
+        testButton.layer.borderColor = UIColor.white.cgColor
+        testButton.layer.backgroundColor = Constants.Colors.purple.cgColor
+        testButton.layer.borderWidth = 1.0
+        testButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        */
+        
+        mapButton.layer.cornerRadius = 3
+        mapButton.layer.borderColor = UIColor.white.cgColor
+                mapButton.layer.backgroundColor = Constants.Colors.purple.cgColor
+        mapButton.layer.borderWidth = 1.0
+        mapButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        
+        autocompleteButton.layer.cornerRadius = 3
+        autocompleteButton.layer.borderColor = UIColor.white.cgColor
+        autocompleteButton.layer.backgroundColor = Constants.Colors.purple.cgColor
+        autocompleteButton.layer.borderWidth = 1.0
+        autocompleteButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        
+        finalDestinationLabel.backgroundColor = Constants.Colors.purple
+        
+        view.backgroundColor = Constants.Colors.purple
+        tableView.backgroundColor = Constants.Colors.purple
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    /*
     @IBAction func testButtonPressed(_ sender: UIButton) {
-        /*
-         presenter.blurBackground = true
-         presenter.blurStyle = UIBlurEffectStyle.light
-         presenter.presentationType = .popup
-         presenter.viewControllerForContext = self
-         customPresentViewController(presenter, viewController: controller, animated: true, completion: nil)
-         */
-        performSegue(withIdentifier: "Test", sender: self)
         
-        //popover?.sourceView = view
-        //popover?.sourceRect = CGRect(x: view.bounds.maxX - 50, y: view.bounds.maxY - 50, width: view.bounds.width - 20, height: view.bounds.height - 20)
-       
-        
-        return
         if notCoolTexts.arrayCounter >= notCoolTexts.notCoolArray.count-1 {
             notCoolTexts.arrayCounter = 0
             performSegue(withIdentifier: "toBlueScreen", sender: self)
@@ -75,9 +93,9 @@ class HomeViewController: UIViewController {
             mapButton.isEnabled = false
             autocompleteButton.isEnabled = false
         }
-        count += 1
         
     }
+    */
     
     @IBAction func mapButtonPressed(_ sender: Any) {
         //does nothing for now
@@ -86,14 +104,17 @@ class HomeViewController: UIViewController {
     @IBAction func searchButtonPressed(_ sender: Any) {
         print("Button pressed")
     }
-    
-    @IBAction func autocompleteButtonPressed(_ sender: UIButton) {
-        
-        let autocompleteController = GMSAutocompleteViewController()
-        autocompleteController.delegate = self
-        present(autocompleteController, animated: true, completion: nil)
-        
+    @IBAction func autocompleteButtonPressed(_ sender: Any) {
+        if destinations.count < 15 {
+            performSegue(withIdentifier: "toPredictions", sender: self)
+        } else {
+            let alertController = UIAlertController(title: "Cannot Add More Places", message: "You have too many places. Remove some to add more.", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Close", style: .cancel, handler: nil)
+            alertController.addAction(action)
+            self.present(alertController, animated: true, completion: nil)
+        }
     }
+    
     
     @IBAction func unwindToHomeViewController(_ segue: UIStoryboardSegue) {
         
@@ -101,7 +122,7 @@ class HomeViewController: UIViewController {
             
             notCoolLabel.text = "LOADING..."
             
-            let url = URL(string: "https://maps.googleapis.com/maps/api/place/details/json?placeid=\(place)&key=\(APIKeyDir)")
+            let url = URL(string: "https://maps.googleapis.com/maps/api/place/details/json?placeid=\(place)&key=\(Constants.APIKey.web)")
             
             Alamofire.request(url!).validate().responseJSON { (response) in
                 switch response.result {
@@ -149,8 +170,6 @@ class HomeViewController: UIViewController {
         }
         print("End of segue 1.0")
     }
-    
-    
     
 }
 
@@ -214,6 +233,7 @@ extension HomeViewController: UITableViewDataSource {
         let place = destinations[indexPath.row]
         cell.destinationTextLabel.text = place.name
         cell.addressTextLabel.text = place.address
+        cell.backgroundColor = Constants.Colors.purple
         //print("Returning cell: \(place.name)")
         return cell
     }
@@ -228,7 +248,7 @@ extension HomeViewController: UITableViewDataSource {
             print("Selection at: \(indexPath.row)")
             if finalDestination?.placeID == destinations[indexPath.row].placeID {
                 finalDestination = nil
-                finalDestinationLabel.text = "Add And Select A Destination Below"
+                finalDestinationLabel.text = "Select a Destination"
             }
             destinations.remove(at: indexPath.row)
             
@@ -242,7 +262,7 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         finalDestination = destinations[indexPath.row]
-        finalDestinationLabel.text = finalDestination?.name
+        finalDestinationLabel.text = "Final Destination:\n" + (finalDestination?.name)!
         print("Selection made")
     }
 }

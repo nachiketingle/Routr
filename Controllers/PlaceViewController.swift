@@ -16,42 +16,69 @@ import AlamofireNetworkActivityIndicator
 
 class PlaceViewController: UIViewController {
     
+    /***************
+    
+     Things to do:
+     -collection view
+     -scroll for type of places other than attractions
+     
+    ******************/
+    
     //var selectedPlace: GMSPlace?
     var selectedPlace: Location?
     var placesList: [Location] = []
-    let APIKey = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
-    let APIKeyDir = "AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8"
     var placesClient = GMSPlacesClient.shared()
     var count = 0
     var lat: CLLocationDegrees!
     var long: CLLocationDegrees!
     var placeID: String?
+    var types: [String]!
+    var selectedType: String? = "Attractions"
     @IBOutlet weak var popupView: UIView!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var removeButton: UIButton!
+    @IBOutlet weak var typePicker: UIPickerView!
     
     override func viewDidLoad() {
         print("Started to load PlaceViewController")
+        
+        types = ["Attractions", "Hotels", "Restaurants", "Gas Stations"]
+        
+        self.typePicker.delegate = self
+        self.typePicker.dataSource = self
+        
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        
+        setDesign()
+        
+        listNearbyPlaces()
+        
+        typePicker.reloadAllComponents()
+        tableView.reloadData()
+        super.viewDidLoad()
+    }
+    
+    func setDesign() {
         
         view.backgroundColor = UIColor.darkGray.withAlphaComponent(0.5)
         view.isOpaque = false
         
         popupView.layer.cornerRadius = 10
         
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
+        self.tableView.layer.cornerRadius = 10
         
         if placeID == nil {
-            navigationItem.rightBarButtonItem?.isEnabled = false
-            navigationItem.rightBarButtonItem?.tintColor = UIColor.clear
+            removeButton.isEnabled = false
+            removeButton.tintColor = UIColor.clear
+            //navigationItem.rightBarButtonItem?.isEnabled = false
+            //navigationItem.rightBarButtonItem?.tintColor = UIColor.clear
         } else {
-            navigationItem.rightBarButtonItem?.isEnabled = true
-            navigationItem.rightBarButtonItem?.tintColor = nil
+            removeButton.isEnabled = true
+            removeButton.tintColor = nil
+            //navigationItem.rightBarButtonItem?.isEnabled = true
+            //navigationItem.rightBarButtonItem?.tintColor = nil
         }
-        
-        listNearbyPlaces()
-        
-        tableView.reloadData()
-        super.viewDidLoad()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -77,8 +104,9 @@ class PlaceViewController: UIViewController {
 
         placesList.removeAll()
         
-
-        let url = URL(string: "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(lat!),\(long!)&radius=30000&keyword=attraction&key=\(APIKeyDir)")
+        let keyword = selectedType?.replacingOccurrences(of: " ", with: "+")
+        print(keyword!)
+        let url = URL(string: "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(lat!),\(long!)&radius=20000&keyword=\(keyword!)&key=\(Constants.APIKey.web)")
         print("Latitude: \(lat!), Longitude: \(long!)")
         Alamofire.request(url!).validate().responseJSON() { (response) in
             switch response.result {
@@ -117,28 +145,33 @@ class PlaceViewController: UIViewController {
         performSegue(withIdentifier: "removeMarker", sender: self)
     }
     
-    /*
-    @IBAction func removePlacePressed(_ sender: UIBarButtonItem) {
-        performSegue(withIdentifier: "removeMarker", sender: self)
-    }
- */
     
 }
 
-extension PlaceViewController: UITableViewDataSource {
+extension PlaceViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
-    //unused function
-    func loadImageForMetaData(photoMetaData: GMSPlacePhotoMetadata, cell: ListPlacesTableViewCell) {
-        placesClient.loadPlacePhoto(photoMetaData) { (photo, error) in
-            if let error = error {
-                print("Photo error: \(error.localizedDescription)")
-                return
-            }
-            cell.placeImageView.image = photo
-            cell.attributionTextLabel.text = photoMetaData.attributions?.string
-            
-        }
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
     }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return types.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        print("Title for \(row) is \(types[row])")
+        return types[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        print("Selected: \(types[row])")
+        selectedType = types[row]
+        listNearbyPlaces()
+    }
+    
+}
+
+extension PlaceViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return placesList.count
@@ -165,13 +198,13 @@ extension PlaceViewController: UITableViewDataSource {
         return 0
     }
     
-}
-
-extension PlaceViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //print("Selection started")
         selectedPlace = placesList[indexPath.row]
         //print("Selection continued")
         performSegue(withIdentifier: "selectionMade", sender: self)
     }
+    
 }
+
+

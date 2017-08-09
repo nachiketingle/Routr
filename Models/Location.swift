@@ -24,7 +24,6 @@ class Location {
     var placeID: String = ""
     var attributedText: String!
     var imageURL: URL!
-    final let APIKey: String = "AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA"
     var imageView: UIImageView = UIImageView()
     
     
@@ -35,8 +34,8 @@ class Location {
         self.long = CLLocationDegrees(json["geometry"]["location"]["lng"].doubleValue)
         self.coord = CLLocationCoordinate2D(latitude: self.lat, longitude: self.long)
         self.address = json["formatted_address"].stringValue
-        if self.address == "" {
-            //self.address = json["vicinity"].stringValue
+        if self.address == "" || self.address == " "{
+            self.address = json["vicinity"].stringValue
         }
         self.placeID = json["place_id"].stringValue
         self.imageURL = URL(string: json["photos"][0]["html_attributions"][0].stringValue)
@@ -46,13 +45,34 @@ class Location {
     convenience init(json: JSON, setImage: Bool, tableView: UITableView) {
         self.init(json: json)
         if setImage {
-            let url = URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=AIzaSyD1IwK5n262P-GQqNq-0pHbKTwPVPzscg8")
+            let url = URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=\(Constants.APIKey.web)")
             Alamofire.request(url!).validate().responseImage(completionHandler: { (response) in
                 switch response.result {
                 case .success:
                     if let value = response.result.value {
                         self.imageView.image = value
                         tableView.reloadData()
+                    }
+                case .failure(let error):
+                    print("Error: \(error.localizedDescription)")
+                }
+                
+            })
+            
+        }
+        
+    }
+    
+    convenience init(json: JSON, setImage: Bool, collectionView: UICollectionView) {
+        self.init(json: json)
+        if setImage {
+            let url = URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=\(Constants.APIKey.web)")
+            Alamofire.request(url!).validate().responseImage(completionHandler: { (response) in
+                switch response.result {
+                case .success:
+                    if let value = response.result.value {
+                        self.imageView.image = value
+                        collectionView.reloadData()
                     }
                 case .failure(let error):
                     print("Error: \(error.localizedDescription)")
