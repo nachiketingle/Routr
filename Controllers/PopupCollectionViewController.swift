@@ -136,11 +136,6 @@ class PopupCollectionViewController: UIViewController {
         
         typesButton.titleLabel?.text = selectedType
         
-        let imageView = UIImageView(image: UIImage(named: "ajax-loader"))
-        imageView.frame = CGRect(x: 20.0, y: 50.0, width: self.view.frame.size.width - 40, height: 150.0)
-        popupView.addSubview(imageView)
-        collectionView.isHidden = true
-        
         placesList.removeAll()
         let keyword = selectedType.replacingOccurrences(of: " ", with: "+")
         print(keyword)
@@ -164,8 +159,6 @@ class PopupCollectionViewController: UIViewController {
                         self.placesList.append( Location(json: json["results"][count], setImage: true, collectionView: self.collectionView) )
                         print("Appended: \(json["results"][count]["name"].stringValue)")
                     }
-                    imageView.removeFromSuperview()
-                    self.collectionView.isHidden = false
                     self.collectionView.reloadData()
                 }
             case .failure(let error):

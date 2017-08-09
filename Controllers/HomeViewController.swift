@@ -19,7 +19,6 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var finalDestinationLabel: UILabel!
     @IBOutlet weak var autocompleteButton: UIButton!
     @IBOutlet weak var mapButton: UIButton!
-    @IBOutlet weak var notCoolLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
     var destinations:[Location] = []
@@ -118,9 +117,11 @@ class HomeViewController: UIViewController {
     
     @IBAction func unwindToHomeViewController(_ segue: UIStoryboardSegue) {
         
+        
+        
         if let place = selectedPlace {
             
-            notCoolLabel.text = "LOADING..."
+            finalDestinationLabel.text = "LOADING..."
             
             let url = URL(string: "https://maps.googleapis.com/maps/api/place/details/json?placeid=\(place)&key=\(Constants.APIKey.web)")
             
@@ -137,12 +138,18 @@ class HomeViewController: UIViewController {
                             self.destinations.append( Location( json: json["result"] ) )
                         }
                         
+                        if self.destinations.isEmpty {
+                            self.finalDestinationLabel.text = "Add a Destination"
+                        } else {
+                            self.finalDestinationLabel.text = "Select a Destination"
+                        }
+                        
                     }
                 case .failure(let error):
                     print("Error: \(error.localizedDescription)")
                 }
                 
-                self.notCoolLabel.text = "Finished"
+
                 self.tableView.reloadData()
             }
             selectedPlace = nil
@@ -189,7 +196,6 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
          destinationCells.append(cell)
          print(destinationCells)
          */
-        notCoolLabel.text = "Marker shall be placed on map"
         notCoolTexts.arrayCounter = 0
         mapButton.isEnabled = true
         autocompleteButton.isEnabled = true
@@ -248,10 +254,13 @@ extension HomeViewController: UITableViewDataSource {
             print("Selection at: \(indexPath.row)")
             if finalDestination?.placeID == destinations[indexPath.row].placeID {
                 finalDestination = nil
+
                 finalDestinationLabel.text = "Select a Destination"
             }
             destinations.remove(at: indexPath.row)
-            
+            if destinations.isEmpty {
+                finalDestinationLabel.text = "Add a Destination"
+            }
             self.tableView.reloadData()
             //destinationCells.remove(at: indexPath.row)
         }

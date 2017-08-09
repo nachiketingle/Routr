@@ -76,11 +76,11 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
         let cell = tableView.dequeueReusableCell(withIdentifier: "predictionCell", for: indexPath) as! ListPredictionsTableViewCell
         if resultAvailable {
             cell.predictionLabel.text = predictedPlaces[indexPath.row].name
+            cell.isUserInteractionEnabled = true
             if !predictedPlaces[indexPath.row].secondaryText.contains(",") {
                 predictedPlaces[indexPath.row].secondaryText = "Please select a more specific location"
                 cell.isUserInteractionEnabled = false
             }
-            cell.isUserInteractionEnabled = true
             cell.secondaryLabel.text = predictedPlaces[indexPath.row].secondaryText
         } else {
             cell.predictionLabel.text = "No results available"
