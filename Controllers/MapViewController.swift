@@ -123,23 +123,7 @@ class MapViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let identifier = segue.identifier {
-            if identifier == "toPlacesList" {
-                if let nextViewController = segue.destination as? PlaceViewController {
-                    print("Preparing to segue")
-                    if let location = selectMarkerLocation {
-                        nextViewController.lat = location.latitude
-                        nextViewController.long = location.longitude
-                        nextViewController.placeID = removeMarker!
-                        selectMarkerLocation = nil
-                    } else {
-                        nextViewController.lat = currentLocation?.coordinate.latitude
-                        nextViewController.long = currentLocation?.coordinate.longitude
-                        nextViewController.placeID = nil
-                    }
-                    
-                    print("Finished preperations")
-                }
-            } else if identifier == "cancel" {
+            if identifier == "cancel" {
                 if let nextViewController = segue.destination as? HomeViewController {
                     nextViewController.destinations = self.destinations
                 }
