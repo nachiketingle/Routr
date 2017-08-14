@@ -123,12 +123,13 @@ class PlaceViewController: UIViewController {
                     
                     print("JSON status for placeVC: \(json["status"])")
                     for count in 0...max {
-                        self.placesList.append( Location(json: json["results"][count], setImage: true, tableView: self.tableView) )
+                        self.placesList.append( Location(json: json["results"][count], setImage: true, tableView: self.tableView, controller: self) )
                         print("Appended: \(json["results"][count]["name"].stringValue)")
                     }
                     self.tableView.reloadData()
                 }
             case .failure(let error):
+                self.present(Constants.Error.errorController, animated: true, completion: nil)
                 print("Error: \(error.localizedDescription)")
                 
             }

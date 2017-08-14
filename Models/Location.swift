@@ -42,7 +42,7 @@ class Location {
         
     }
     
-    convenience init(json: JSON, setImage: Bool, tableView: UITableView) {
+    convenience init(json: JSON, setImage: Bool, tableView: UITableView, controller: UIViewController) {
         self.init(json: json)
         if setImage {
             let url = URL(string: "https://maps.googleapis.com/maps/api/place/photo?maxheight=400&photoreference=\(json["photos"][0]["photo_reference"])&key=\(Constants.APIKey.web)")
@@ -54,6 +54,7 @@ class Location {
                         tableView.reloadData()
                     }
                 case .failure(let error):
+                    controller.present(Constants.Error.errorController, animated: true, completion: nil)
                     print("Error: \(error.localizedDescription)")
                 }
                 

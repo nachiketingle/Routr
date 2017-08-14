@@ -23,6 +23,12 @@ struct Constants {
         
     }
     
-
+    struct Error {
+        static var errorController: UIAlertController {
+            let alertController = UIAlertController(title: "Network Error", message: nil, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))
+            return alertController
+        }
+    }
     
 }

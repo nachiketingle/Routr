@@ -14,11 +14,10 @@ import Alamofire
 import AlamofireImage
 import AlamofireNetworkActivityIndicator
 import SwiftyJSON
-import Presentr
 
 class MapViewController: UIViewController {
     
-    var locationManager = CLLocationManager()
+    var locationManager : CLLocationManager?
     var currentLocation: CLLocation?
     var mapView: GMSMapView!
     var zoomLevel: Float = 15.0
@@ -33,14 +32,11 @@ class MapViewController: UIViewController {
     var endPoint: Location!
     var updated = false
     
-    let controller = PlaceViewController()
-    let presenter = Presentr(presentationType: .popup)
-    
     var selectMarker: GMSMarker! = nil
     var removeMarker: String?
     
     override func viewDidLoad() {
-        
+        super.viewDidLoad()
         print("Started to load MapViewController")
         
         navigationController?.navigationBar.barTintColor = Constants.Colors.purple
@@ -48,21 +44,23 @@ class MapViewController: UIViewController {
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         
         //set up location manager
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestAlwaysAuthorization()
-        locationManager.distanceFilter = 50
-        locationManager.startUpdatingLocation()
-        locationManager.delegate = self
-        currentLocation = locationManager.location
+        locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+
+        //locationManager?.requestAlwaysAuthorization()
+
+        locationManager?.distanceFilter = 50
+        
+        //notify
+        locationManager?.startUpdatingLocation()
+        
+        locationManager?.delegate = self
+        currentLocation = locationManager?.location
         
         //get current location and set up camera
         let lat = currentLocation?.coordinate.latitude
         let long = currentLocation?.coordinate.longitude
-        let camera = GMSCameraPosition.camera(withLatitude: lat!,
-                                              longitude: long!,
-                                              zoom: zoomLevel)
+        let camera = GMSCameraPosition.camera(withLatitude: lat!, longitude: long!, zoom: zoomLevel)
         view.backgroundColor = Constants.Colors.purple
-        //mapView.backgroundColor = Constants.Colors.purple.withAlphaComponent(0.7)
         directionsCall()
         
         //set up map view
@@ -79,7 +77,6 @@ class MapViewController: UIViewController {
         view.addSubview(mapView)
         mapView.isHidden = false
         mapView.delegate = self
-        super.viewDidLoad()
         print("Finished loading")
     }
     
@@ -115,9 +112,7 @@ class MapViewController: UIViewController {
                     marker.snippet = selectedPlace?.address
                     marker.map = mapView
                     //selectedPlace = nil
-                    let camera = GMSCameraPosition.camera(withLatitude: place.lat,
-                                                          longitude: place.long,
-                                                          zoom: zoomLevel)
+                    let camera = GMSCameraPosition.camera(withLatitude: place.lat, longitude: place.long, zoom: zoomLevel)
                     mapView.animate(to: camera)
                 }
                 
@@ -281,12 +276,24 @@ class MapViewController: UIViewController {
                             self.setOverlays()
                             
                         } else {
+                            let path = GMSMutablePath()
+                            if let location = self.locationManager?.location{
+                                path.add(location.coordinate)
+                            }
+                            for place in self.destinations {
+                                path.add(place.coord)
+                            }
+                            let bounds = GMSCoordinateBounds.init(path: path)
+                            let position = self.mapView.camera(for: bounds, insets: UIEdgeInsets(top: 100, left: 50, bottom: 50, right: 50) )!
+                            self.mapView.animate(to: position)
+                            
                             self.setMarkers()
                             self.navigationItem.prompt = "No Available Route"
                         }
                     }
                     
                 case .failure(let error):
+                    self.present(Constants.Error.errorController, animated: true, completion: nil)
                     print("Error: \(error.localizedDescription)")
                 }
             }
@@ -313,16 +320,7 @@ extension MapViewController: GMSMapViewDelegate {
                 return true
             }
         }
-        
-        /*
-         controller.lat = selectMarkerLocation?.latitude
-         controller.long = selectMarkerLocation?.longitude
-         presenter.blurBackground = true
-         presenter.roundCorners = true
-         presenter.dismissOnTap = true
-         presenter.dismissOnSwipe = false
-         customPresentViewController(presenter, viewController: controller, animated: true, completion: nil)
-         */
+
         
         return false
     }
@@ -369,23 +367,40 @@ extension MapViewController: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        manager.stopUpdatingLocation()
         switch status {
         case .restricted:
             print("Location access restricted")
+            self.dismiss(animated: true, completion: nil)
+            fallthrough
         case .denied:
+            
+            self.dismiss(animated: true, completion: nil)
             print("User denied access to this location")
             mapView.isHidden = false
+            fallthrough
+            
         case .notDetermined:
+            locationManager?.stopUpdatingLocation()
+            let alertController = UIAlertController(title: "Unable to use this function unless location services is enabled", message: "In order to enable location services, go to \"Settings\" -> \"Privacy\" -> \"Location Services\"", preferredStyle: .alert)
+            let action = UIAlertAction(title: "Close", style: .default, handler: { (action) in
+                self.dismiss(animated: true, completion: nil)
+            })
+            alertController.addAction(action)
+            present(alertController, animated: true, completion: nil)
+            
             print("Location status is not determined")
         case .authorizedAlways:
             fallthrough
         case .authorizedWhenInUse:
+            manager.startUpdatingLocation()
             print("Location status is OK")
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        locationManager.startUpdatingLocation()
+        locationManager?.stopUpdatingLocation()
         print("Error: \(error.localizedDescription)")
     }
+    
 }

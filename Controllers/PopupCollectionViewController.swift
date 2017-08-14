@@ -84,12 +84,19 @@ class PopupCollectionViewController: UIViewController {
         closeButton.layer.borderWidth = 1.0
         closeButton.layer.cornerRadius = 2.0
         closeButton.titleLabel?.textColor = UIColor.white
-        removeButton.setTitleColor(Constants.Colors.purple, for: .disabled)
+        
+        removeButton.setTitleColor(UIColor.white, for: .disabled)
         removeButton.setTitleColor(UIColor.white, for: .normal)
         if placeID == nil {
             removeButton.isEnabled = false
-            removeButton.tintColor = UIColor.clear
-            
+            removeButton.tintColor = nil
+            print("PlaceID is nil")
+            //removeButton.titleLabel?.text = "~"
+            removeButton.setTitle("~", for: .normal)
+            removeButton.backgroundColor = Constants.Colors.purple
+            removeButton.layer.borderColor = UIColor.white.cgColor
+            removeButton.layer.borderWidth = 1.0
+            removeButton.layer.cornerRadius = 2.0
             //navigationItem.rightBarButtonItem?.isEnabled = false
             //navigationItem.rightBarButtonItem?.tintColor = UIColor.clear
         } else {
@@ -97,8 +104,8 @@ class PopupCollectionViewController: UIViewController {
             removeButton.tintColor = nil
             //navigationItem.rightBarButtonItem?.isEnabled = true
             //navigationItem.rightBarButtonItem?.tintColor = nil
-            
-            
+            print("PlaceID is available")
+            removeButton.setTitle("Remove", for: .normal)
             removeButton.backgroundColor = Constants.Colors.purple
             removeButton.layer.borderColor = UIColor.white.cgColor
             removeButton.layer.borderWidth = 1.0
@@ -155,13 +162,17 @@ class PopupCollectionViewController: UIViewController {
                     }
                     
                     print("JSON status for placeVC: \(json["status"])")
-                    for count in 0...max {
-                        self.placesList.append( Location(json: json["results"][count], setImage: true, collectionView: self.collectionView) )
-                        print("Appended: \(json["results"][count]["name"].stringValue)")
+                    if max >= 0 {
+                        for count in 0...max {
+                            self.placesList.append( Location(json: json["results"][count], setImage: true, collectionView: self.collectionView) )
+                            print("Appended: \(json["results"][count]["name"].stringValue)")
+                        }
                     }
+
                     self.collectionView.reloadData()
                 }
             case .failure(let error):
+                self.present(Constants.Error.errorController, animated: true, completion: nil)
                 print("Error: \(error.localizedDescription)")
                 
             }

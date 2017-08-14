@@ -11,7 +11,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Route Planner-->
+        <!--Routr-->
         <scene sceneID="N8u-vq-jB6">
             <objects>
                 <viewController id="JZ4-JH-fZ4" customClass="HomeViewController" customModule="GoogleMapsAPITest" customModuleProvider="target" sceneMemberID="viewController">
@@ -40,7 +40,7 @@
                                         <rect key="frame" x="0.0" y="36" width="343" height="38"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VQk-ZI-sgx">
-                                                <rect key="frame" x="0.0" y="0.0" width="153.5" height="38"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="153" height="38"/>
                                                 <color key="backgroundColor" red="0.63921568630000003" green="0.1333333333" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="VQk-ZI-sgx" secondAttribute="height" multiplier="20:5" id="juB-AB-hRy"/>
@@ -51,11 +51,10 @@
                                                 </state>
                                                 <connections>
                                                     <action selector="mapButtonPressed:" destination="JZ4-JH-fZ4" eventType="touchUpInside" id="MMj-Aa-zgE"/>
-                                                    <segue destination="ORX-SL-5hb" kind="presentation" identifier="toMapView" id="ztv-bi-Z4D"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mN2-Xj-L8w">
-                                                <rect key="frame" x="190.5" y="0.0" width="152.5" height="38"/>
+                                                <rect key="frame" x="190" y="0.0" width="153" height="38"/>
                                                 <color key="backgroundColor" red="0.63921568630000003" green="0.1333333333" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="90" id="2yh-NH-s9X"/>
@@ -147,13 +146,14 @@
                             <constraint firstItem="JBY-g3-CfJ" firstAttribute="top" secondItem="ceO-qq-1vs" secondAttribute="bottom" constant="30" id="lzJ-cN-Kby"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Route Planner" id="J2w-5B-M3J"/>
+                    <navigationItem key="navigationItem" title="Routr" id="J2w-5B-M3J"/>
                     <connections>
                         <outlet property="autocompleteButton" destination="mN2-Xj-L8w" id="b9z-IM-5iA"/>
                         <outlet property="finalDestinationLabel" destination="VYC-2s-J85" id="P1x-lS-kpy"/>
                         <outlet property="mapButton" destination="VQk-ZI-sgx" id="teU-Gl-zKP"/>
                         <outlet property="tableView" destination="noS-vD-Wp4" id="zP0-Ca-JqC"/>
                         <segue destination="ecJ-7Z-UdY" kind="presentation" identifier="toPredictions" id="AVo-Iw-Xp4"/>
+                        <segue destination="ORX-SL-5hb" kind="presentation" identifier="toMapView" id="LNZ-Km-KIe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Za8-tD-wPC" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -238,6 +238,9 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="hcw-NX-b3K">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="22"/>
+                        </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

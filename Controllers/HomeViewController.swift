@@ -14,8 +14,8 @@ import Alamofire
 import AlamofireNetworkActivityIndicator
 import SwiftyJSON
 
-class HomeViewController: UIViewController {
-
+class HomeViewController: UIViewController, CLLocationManagerDelegate {
+    
     @IBOutlet weak var finalDestinationLabel: UILabel!
     @IBOutlet weak var autocompleteButton: UIButton!
     @IBOutlet weak var mapButton: UIButton!
@@ -23,22 +23,30 @@ class HomeViewController: UIViewController {
     
     var destinations:[Location] = []
     var finalDestination: Location?
-    //var destinationCells: [ListDestinationsTableViewCell] = []
     
     var selectedPlace: String? = nil
-    var notCoolTexts = NotCoolTexts()
-  
+    
+    var authorized: Bool = false
+    
+    let locationManager = CLLocationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        locationManager.delegate = self
         setDesign()
         
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.tableFooterView = UIView()
         //tableView.separatorStyle = .none
-
+        
+        UserDefaults.standard.set(false, forKey: "authorizationSet")
+        
         tableView.reloadData()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        UserDefaults.standard.set(false, forKey: "authorizationSet")
     }
     
     func setDesign() {
@@ -47,18 +55,18 @@ class HomeViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = Constants.Colors.purple
         navigationController?.navigationBar.tintColor = UIColor.white
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        
+        //navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont(name: "Helvetica", size: 21)]
         /*
-        testButton.layer.cornerRadius = 3
-        testButton.layer.borderColor = UIColor.white.cgColor
-        testButton.layer.backgroundColor = Constants.Colors.purple.cgColor
-        testButton.layer.borderWidth = 1.0
-        testButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        */
+         testButton.layer.cornerRadius = 3
+         testButton.layer.borderColor = UIColor.white.cgColor
+         testButton.layer.backgroundColor = Constants.Colors.purple.cgColor
+         testButton.layer.borderWidth = 1.0
+         testButton.titleLabel?.adjustsFontSizeToFitWidth = true
+         */
         
         mapButton.layer.cornerRadius = 3
         mapButton.layer.borderColor = UIColor.white.cgColor
-                mapButton.layer.backgroundColor = Constants.Colors.purple.cgColor
+        mapButton.layer.backgroundColor = Constants.Colors.purple.cgColor
         mapButton.layer.borderWidth = 1.0
         mapButton.titleLabel?.adjustsFontSizeToFitWidth = true
         
@@ -80,26 +88,76 @@ class HomeViewController: UIViewController {
     }
     
     /*
-    @IBAction func testButtonPressed(_ sender: UIButton) {
-        
-        if notCoolTexts.arrayCounter >= notCoolTexts.notCoolArray.count-1 {
-            notCoolTexts.arrayCounter = 0
-            performSegue(withIdentifier: "toBlueScreen", sender: self)
+     @IBAction func testButtonPressed(_ sender: UIButton) {
+     
+     if notCoolTexts.arrayCounter >= notCoolTexts.notCoolArray.count-1 {
+     notCoolTexts.arrayCounter = 0
+     performSegue(withIdentifier: "toBlueScreen", sender: self)
+     }
+     notCoolLabel.text = notCoolTexts.notCoolArray[notCoolTexts.arrayCounter]
+     notCoolTexts.arrayCounter += 1
+     if notCoolLabel.text == notCoolTexts.disablePhrase {
+     mapButton.isEnabled = false
+     autocompleteButton.isEnabled = false
+     }
+     
+     }
+     */
+    
+    
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        locationManager.stopUpdatingLocation()
+        manager.stopUpdatingLocation()
+        if let authorization = UserDefaults.standard.value(forKey: "authorizationSet") as? Bool {
+            if authorization {
+                switch status {
+                case .restricted:
+                    print("Location access restricted")
+                case .denied:
+                    print("User denied access to this location")
+                //mapView.isHidden = false
+                case .notDetermined:
+                    print("Location status is not determined")
+                case .authorizedAlways:
+                    print("Location status is OK")
+                    self.performSegue(withIdentifier: "toMapView", sender: self)
+                //fallthrough
+                case .authorizedWhenInUse:
+                    self.performSegue(withIdentifier: "toMapView", sender: self)
+                    print("Location status is OK")
+                }
+            }
         }
-        notCoolLabel.text = notCoolTexts.notCoolArray[notCoolTexts.arrayCounter]
-        notCoolTexts.arrayCounter += 1
-        if notCoolLabel.text == notCoolTexts.disablePhrase {
-            mapButton.isEnabled = false
-            autocompleteButton.isEnabled = false
-        }
-        
+        UserDefaults.standard.set(false, forKey: "authorizationSet")
     }
-    */
+    
+    
+    
     
     @IBAction func mapButtonPressed(_ sender: Any) {
-        //does nothing for now
-        
+        UserDefaults.standard.set(true, forKey: "authorizationSet")
+        locationManager.requestAlwaysAuthorization()
+        if CLLocationManager.locationServicesEnabled() {
+            switch CLLocationManager.authorizationStatus() {
+            case .notDetermined, .restricted, .denied:
+                //create alert
+                
+                let alertController = UIAlertController(title: "Unable to use this function unless location services is enabled", message: "In order to enable location services, go to \"Settings\" -> \"Privacy\" -> \"Location Services\"", preferredStyle: .alert)
+                let action = UIAlertAction(title: "Close", style: .cancel, handler: nil)
+                alertController.addAction(action)
+                present(alertController, animated: true, completion: nil)
+                
+                print("was denied")
+            case .authorizedAlways, .authorizedWhenInUse:
+                performSegue(withIdentifier: "toMapView", sender: self)
+            }
+        } else {
+        }
     }
+    
+    
+    
     @IBAction func searchButtonPressed(_ sender: Any) {
         print("Button pressed")
     }
@@ -117,13 +175,23 @@ class HomeViewController: UIViewController {
     
     @IBAction func unwindToHomeViewController(_ segue: UIStoryboardSegue) {
         
+        print("Unwinding to HomeViewController")
         
-        
-        if let place = selectedPlace {
+        if let placeID = selectedPlace {
+            
+            print("PlaceID is: " + placeID)
+            
+            for location in destinations {
+                if location.placeID == placeID {
+                    selectedPlace = nil
+                    print("Duplicate location")
+                    return
+                }
+            }
             
             finalDestinationLabel.text = "LOADING..."
             
-            let url = URL(string: "https://maps.googleapis.com/maps/api/place/details/json?placeid=\(place)&key=\(Constants.APIKey.web)")
+            let url = URL(string: "https://maps.googleapis.com/maps/api/place/details/json?placeid=\(placeID)&key=\(Constants.APIKey.web)")
             
             Alamofire.request(url!).validate().responseJSON { (response) in
                 switch response.result {
@@ -136,29 +204,23 @@ class HomeViewController: UIViewController {
                         print("Status: \(json["status"])")
                         if json["status"] == "OK"{
                             self.destinations.append( Location( json: json["result"] ) )
-                        }
-                        
-                        if self.destinations.isEmpty {
-                            self.finalDestinationLabel.text = "Add a Destination"
-                        } else {
-                            self.finalDestinationLabel.text = "Select a Destination"
+                            print("New Location")
+                            if let final = self.finalDestination {
+                                self.finalDestinationLabel.text = "Final Destination:\n" + final.name
+                            } else {
+                                self.finalDestinationLabel.text = "Select A Destination"
+                            }
                         }
                         
                     }
                 case .failure(let error):
                     print("Error: \(error.localizedDescription)")
                 }
-                
-
                 self.tableView.reloadData()
             }
             selectedPlace = nil
         }
-        
-        
         tableView.reloadData()
-        // for now, simply defining the method is sufficient.
-        // we'll add code later
         
     }
     
@@ -171,9 +233,10 @@ class HomeViewController: UIViewController {
                         print("Starting to prepare mapViewController")
                         controller.destinations = destinations
                         controller.endPoint = finalDestination
+                        controller.locationManager = self.locationManager
                     }
                 }
-            } 
+            }
         }
         print("End of segue 1.0")
     }
@@ -190,18 +253,12 @@ extension HomeViewController: GMSAutocompleteViewControllerDelegate {
         print("Place attributions: \(String(describing: place.attributions))")
         let location = Location(place: place)
         destinations.append(location)
-        /*
-         let cell = tableView.dequeueReusableCell(withIdentifier: "listDestinationsTableViewCell") as! ListDestinationsTableViewCell
-         cell.setLocation(to: location)
-         destinationCells.append(cell)
-         print(destinationCells)
-         */
-        notCoolTexts.arrayCounter = 0
+        
         mapButton.isEnabled = true
         autocompleteButton.isEnabled = true
         tableView.reloadData()
         dismiss(animated: true, completion: nil)
-        //performSegue(withIdentifier: "toMapView", sender: self)
+        
     }
     
     func viewController(_ viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: Error) {
@@ -233,19 +290,16 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //print("enter method")
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "listDestinationsTableViewCell", for: indexPath) as! ListDestinationsTableViewCell
         let place = destinations[indexPath.row]
         cell.destinationTextLabel.text = place.name
         cell.addressTextLabel.text = place.address
         cell.backgroundColor = Constants.Colors.purple
-        //print("Returning cell: \(place.name)")
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        //print("Returning height")
         return 50
     }
     
@@ -254,15 +308,17 @@ extension HomeViewController: UITableViewDataSource {
             print("Selection at: \(indexPath.row)")
             if finalDestination?.placeID == destinations[indexPath.row].placeID {
                 finalDestination = nil
-
-                finalDestinationLabel.text = "Select a Destination"
+                finalDestinationLabel.text = "Select A Destination"
             }
+            
+            if self.destinations.isEmpty {
+                self.finalDestinationLabel.text = "Add a Destination"
+            } else {
+                self.finalDestinationLabel.text = "Select a Destination"
+            }
+            
             destinations.remove(at: indexPath.row)
-            if destinations.isEmpty {
-                finalDestinationLabel.text = "Add a Destination"
-            }
             self.tableView.reloadData()
-            //destinationCells.remove(at: indexPath.row)
         }
     }
     

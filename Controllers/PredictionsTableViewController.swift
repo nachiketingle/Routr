@@ -11,6 +11,7 @@ import UIKit
 import Alamofire
 import AlamofireNetworkActivityIndicator
 import SwiftyJSON
+import Answers
 
 class PredictionsTableViewController: UITableViewController, UISearchResultsUpdating, UISearchBarDelegate {
     
@@ -26,6 +27,7 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
         navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         navigationController?.title = "Search for a place"
         navigationController?.navigationItem.title = "Search for a place"
+        navigationController?.setNavigationBarHidden(false, animated: false)
         //filteredPlaces = unfilteredPlaces
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
@@ -52,9 +54,9 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
         if let identifier = segue.identifier {
             if identifier == "unwindToHome" {
                 if let nextViewController = segue.destination as? HomeViewController {
-                    self.dismiss(animated: true, completion: nil)
                     nextViewController.selectedPlace = selectedPlace!
                     print("New location has been added")
+                    self.dismiss(animated: true, completion: nil)
                 }
             }
         }
@@ -99,6 +101,8 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if predictedPlaces[indexPath.row].secondaryText != "Please select a more specific location" {
             selectedPlace = predictedPlaces[indexPath.row].placeID
+            Answers.logCustomEvent(withName: "AddedPlace", customAttributes: ["PlaceID":selectedPlace!])
+            navigationController?.setNavigationBarHidden(true, animated: false)
             performSegue(withIdentifier: "unwindToHome", sender: self)
         }
     }
@@ -137,6 +141,7 @@ class PredictionsTableViewController: UITableViewController, UISearchResultsUpda
                     }
                     
                 case .failure(let error):
+                    self.present(Constants.Error.errorController, animated: true, completion: nil)
                     print("Error: \(error.localizedDescription)")
                 }
             }

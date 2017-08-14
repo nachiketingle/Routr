@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Fabric
+import Answers
 import GoogleMaps
 import GooglePlaces
 
@@ -18,6 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        Fabric.with([Answers.self])
+        
         //APIkey: AIzaSyA0aS34EvGwGV8cpBck3zEUU6_8HKkfYuA
         //GoogleMaps services
         GMSServices.provideAPIKey(Constants.APIKey.IOS)
