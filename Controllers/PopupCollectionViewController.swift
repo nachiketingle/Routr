@@ -12,6 +12,7 @@ import GooglePlaces
 import Alamofire
 import AlamofireNetworkActivityIndicator
 import SwiftyJSON
+import Answers
 
 class PopupCollectionViewController: UIViewController {
     
@@ -41,6 +42,7 @@ class PopupCollectionViewController: UIViewController {
             let action = UIAlertAction(title: type, style: .default) { (action) in
                 self.selectedType = type
                 self.listNearbyPlaces()
+                Answers.logCustomEvent(withName: "Changed Type", customAttributes: ["Type" : type])
                 self.collectionView.reloadData()
             }
             typeAlertController.addAction(action)
@@ -186,6 +188,7 @@ class PopupCollectionViewController: UIViewController {
     }
     
     @IBAction func removePressed(_ sender: UIButton) {
+        Answers.logCustomEvent(withName: "RemovedMarker", customAttributes: nil)
         performSegue(withIdentifier: "removeMarker", sender: self)
     }
     

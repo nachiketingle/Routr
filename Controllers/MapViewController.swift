@@ -14,6 +14,7 @@ import Alamofire
 import AlamofireImage
 import AlamofireNetworkActivityIndicator
 import SwiftyJSON
+import Answers
 
 class MapViewController: UIViewController {
     
@@ -77,6 +78,9 @@ class MapViewController: UIViewController {
         view.addSubview(mapView)
         mapView.isHidden = false
         mapView.delegate = self
+        
+        Answers.logCustomEvent(withName: "Map Load", customAttributes: nil)
+        
         print("Finished loading")
     }
     
