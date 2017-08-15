@@ -62,13 +62,20 @@
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="UOx-He-vSq">
                                         <rect key="frame" x="0.0" y="29" width="303" height="588"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="0.71372549019999998" green="0.34509803919999998" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="c1G-BK-8Gr">
                                             <size key="itemSize" width="140" height="198"/>
                                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         </collectionViewFlowLayout>
+                                        <activityIndicatorView key="backgroundView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" id="BBs-tU-ZVW">
+                                            <rect key="frame" x="0.0" y="0.0" width="303" height="588"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" red="0.71372549019999998" green="0.34509803919999998" blue="0.74901960779999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </activityIndicatorView>
                                         <cells>
                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="collectPlaceCell" id="8zt-fk-Pyc" customClass="PlaceCollectionViewCell" customModule="GoogleMapsAPITest" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="140" height="198"/>
@@ -190,6 +197,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="BBs-tU-ZVW" id="W5e-Zb-60V"/>
                         <outlet property="closeButton" destination="7QV-Va-TY8" id="pa9-yr-WK5"/>
                         <outlet property="collectionView" destination="UOx-He-vSq" id="a5a-cU-V82"/>
                         <outlet property="popupView" destination="jgZ-Dn-RBL" id="HXi-4m-ylE"/>

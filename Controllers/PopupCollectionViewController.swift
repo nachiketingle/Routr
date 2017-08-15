@@ -32,6 +32,7 @@ class PopupCollectionViewController: UIViewController {
     @IBOutlet weak var removeButton: UIButton!
     @IBOutlet weak var closeButton: UIButton!
     @IBOutlet weak var typesButton: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     
     override func viewDidLoad() {
@@ -144,8 +145,10 @@ class PopupCollectionViewController: UIViewController {
     func listNearbyPlaces() {
         
         typesButton.titleLabel?.text = selectedType
+        activityIndicator.startAnimating()
         
         placesList.removeAll()
+        
         let keyword = selectedType.replacingOccurrences(of: " ", with: "+")
         print(keyword)
         let url = URL(string: "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=\(lat!),\(long!)&radius=20000&keyword=\(keyword)&key=\(Constants.APIKey.web)")
@@ -170,7 +173,7 @@ class PopupCollectionViewController: UIViewController {
                             print("Appended: \(json["results"][count]["name"].stringValue)")
                         }
                     }
-
+                    self.activityIndicator.stopAnimating()
                     self.collectionView.reloadData()
                 }
             case .failure(let error):
